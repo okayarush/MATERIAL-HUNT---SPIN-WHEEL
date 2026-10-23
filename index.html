@@ -85,10 +85,10 @@
                   0 0 0 1px rgba(255, 255, 255, 0.1);
     }
 
-    /* Seamless Logo Styling - No white box, pure logo */
+    /* Seamless Logo Styling - Invert black-on-white image to crisp white lion and text with zero white box */
     .pure-logo-img {
+      filter: invert(1) brightness(1.2) drop-shadow(0 0 15px rgba(251, 191, 36, 0.45));
       mix-blend-mode: screen;
-      filter: drop-shadow(0 0 12px rgba(251, 191, 36, 0.45));
     }
 
     /* Smooth animated transitions */
@@ -135,61 +135,61 @@
     
     <!-- Large MIB Lion Logo - Pure, No Border, No Background -->
     <div class="relative mb-1 flex items-center justify-center">
-      <div class="w-48 sm:w-64 md:w-80 h-28 sm:h-36 md:h-40 flex items-center justify-center overflow-hidden">
+      <div class="w-56 sm:w-72 md:w-96 h-28 sm:h-36 md:h-44 flex items-center justify-center overflow-hidden">
         <img 
           id="mibLogoImg"
-          src="./logo.jpg" 
+          src="./logo.png" 
           alt="Make In BVB Lion Logo" 
           class="pure-logo-img max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105"
-          onerror="this.onerror=null; this.src='./logo.png'; this.classList.remove('pure-logo-img');"
+          onerror="this.onerror=null; this.src='./logo.jpg';"
         />
       </div>
     </div>
 
     <!-- Title: SPIN THE WHEEL -->
-    <h1 class="carnival-title text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-[0.18em] leading-tight drop-shadow-xl">
+    <h1 class="carnival-title text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-[0.18em] leading-tight drop-shadow-xl">
       SPIN THE WHEEL
     </h1>
-    <p class="text-xs sm:text-sm font-black tracking-[0.3em] text-amber-300 uppercase mt-0.5">
+    <p class="text-xs sm:text-base font-black tracking-[0.3em] text-amber-300 uppercase mt-1">
       MAKE IN BVB • INSPIRING MINDS TO INNOVATE
     </p>
   </header>
 
   <!-- MAIN LANDSCAPE DUAL-COLUMN CONTAINER -->
-  <main class="flex-1 w-full max-w-7xl mx-auto px-4 lg:px-8 py-2 lg:py-4 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-12">
+  <main class="flex-1 w-full max-w-7xl mx-auto px-4 lg:px-8 py-3 lg:py-6 flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-14">
     
     <!-- LEFT COLUMN: CARNIVAL WHEEL + CRT MONITOR -->
     <div class="flex flex-col items-center justify-center shrink-0">
       
-      <!-- Carnival Wheel Component -->
-      <div class="relative w-[300px] h-[300px] sm:w-[340px] sm:h-[340px] xl:w-[370px] xl:h-[370px] flex items-center justify-center">
+      <!-- Carnival Wheel Component (Enlarged to massive size) -->
+      <div class="relative w-[380px] h-[380px] sm:w-[460px] sm:h-[460px] md:w-[520px] md:h-[520px] xl:w-[580px] xl:h-[580px] flex items-center justify-center transition-all">
 
         <!-- Outer Glowing Gold Marquee Rim -->
-        <div class="absolute inset-0 rounded-full border-[8px] border-[#c98a1a] shadow-[0_0_35px_rgba(234,179,8,0.35),inset_0_0_20px_rgba(0,0,0,0.8)] bg-[#2b1704]"></div>
+        <div class="absolute inset-0 rounded-full border-[10px] sm:border-[12px] border-[#c98a1a] shadow-[0_0_55px_rgba(234,179,8,0.45),inset_0_0_28px_rgba(0,0,0,0.85)] bg-[#2b1704]"></div>
 
         <!-- Inner Bezel Ring with metallic sheen -->
-        <div class="absolute inset-[6px] rounded-full border-[4px] border-[#ffd859] pointer-events-none"></div>
+        <div class="absolute inset-[8px] sm:inset-[10px] rounded-full border-[5px] sm:border-[6px] border-[#ffd859] pointer-events-none"></div>
 
-        <!-- Marquee Light Bulbs (12 bulbs around rim) -->
+        <!-- Marquee Light Bulbs (16 bulbs around rim) -->
         <div id="lightsContainer" class="absolute inset-0 pointer-events-none"></div>
 
         <!-- Wheel Canvas Container -->
-        <div class="relative w-[270px] h-[270px] sm:w-[306px] sm:h-[306px] xl:w-[334px] xl:h-[334px] rounded-full overflow-hidden shadow-2xl">
-          <canvas id="wheelCanvas" width="680" height="680" class="w-full h-full transform transition-transform duration-75"></canvas>
+        <div class="relative w-[340px] h-[340px] sm:w-[416px] sm:h-[416px] md:w-[472px] md:h-[472px] xl:w-[526px] xl:h-[526px] rounded-full overflow-hidden shadow-2xl">
+          <canvas id="wheelCanvas" width="1000" height="1000" class="w-full h-full transform transition-transform duration-75"></canvas>
         </div>
 
         <!-- Top Indicator Needle (Golden Arrow with Red Core) -->
-        <div class="absolute -top-3 z-30 flex flex-col items-center pointer-shadow pointer-events-none">
-          <div class="w-0 h-0 border-l-[14px] border-l-transparent border-r-[14px] border-r-transparent border-t-[28px] border-t-[#fcd34d] relative flex items-center justify-center">
-            <div class="absolute -top-[25px] w-0 h-0 border-l-[9px] border-l-transparent border-r-[9px] border-r-transparent border-t-[19px] border-t-[#dc2626]"></div>
-            <div class="absolute -top-[34px] w-4 h-4 rounded-full bg-amber-300 border-2 border-red-700 shadow-[0_0_8px_#f59e0b]"></div>
+        <div class="absolute -top-4 sm:-top-5 z-30 flex flex-col items-center pointer-shadow pointer-events-none">
+          <div class="w-0 h-0 border-l-[18px] sm:border-l-[22px] border-l-transparent border-r-[18px] sm:border-r-[22px] border-r-transparent border-t-[34px] sm:border-t-[42px] border-t-[#fcd34d] relative flex items-center justify-center">
+            <div class="absolute -top-[30px] sm:-top-[38px] w-0 h-0 border-l-[11px] sm:border-l-[14px] border-l-transparent border-r-[11px] sm:border-r-[14px] border-r-transparent border-t-[23px] sm:border-t-[28px] border-t-[#dc2626]"></div>
+            <div class="absolute -top-[42px] sm:-top-[52px] w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-300 border-2 border-red-700 shadow-[0_0_12px_#f59e0b]"></div>
           </div>
         </div>
 
         <!-- Center Golden Hub with Black Star Badge -->
-        <div id="spinCenterBtn" title="Click to Spin" class="absolute z-20 w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-b from-[#ffe57f] via-[#f59e0b] to-[#b45309] border-[3px] border-[#ffd54f] shadow-[0_4px_12px_rgba(0,0,0,0.8),inset_0_2px_4px_rgba(255,255,255,0.8)] flex items-center justify-center cursor-pointer active:scale-95 transition-transform hover:brightness-110">
-          <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#f8be15] border border-amber-200/60 shadow-inner flex items-center justify-center">
-            <svg class="w-6 h-6 text-slate-900 fill-current drop-shadow" viewBox="0 0 24 24">
+        <div id="spinCenterBtn" title="Click to Spin" class="absolute z-20 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-b from-[#ffe57f] via-[#f59e0b] to-[#b45309] border-[4px] border-[#ffd54f] shadow-[0_6px_20px_rgba(0,0,0,0.8),inset_0_2px_6px_rgba(255,255,255,0.8)] flex items-center justify-center cursor-pointer active:scale-95 transition-transform hover:brightness-110">
+          <div class="w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-[#f8be15] border-2 border-amber-200/60 shadow-inner flex items-center justify-center">
+            <svg class="w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10 text-slate-900 fill-current drop-shadow" viewBox="0 0 24 24">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
             </svg>
           </div>
@@ -198,34 +198,34 @@
       </div>
 
       <!-- TV CRT MONITOR & DUAL ANTENNAS -->
-      <div class="relative w-full flex flex-col items-center -mt-2">
+      <div class="relative w-full flex flex-col items-center mt-1 sm:mt-2">
         <!-- Dual Antenna Wires from CRT to Wheel Bottom -->
-        <svg class="w-32 h-8 text-slate-400/80 drop-shadow -mb-1" viewBox="0 0 160 36" fill="none">
+        <svg class="w-40 sm:w-48 h-10 text-slate-400/80 drop-shadow -mb-1" viewBox="0 0 160 36" fill="none">
           <line x1="18" y1="2" x2="80" y2="34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
           <line x1="142" y1="2" x2="80" y2="34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
           <circle cx="80" cy="33" r="4" fill="#facc15" stroke="#78350f" stroke-width="1.5" class="shadow-lg shadow-amber-500/50"/>
         </svg>
 
         <!-- CRT Monitor Shell -->
-        <div class="w-56 sm:w-60 bg-gradient-to-b from-[#1e2738] to-[#121824] rounded-2xl p-2.5 shadow-[0_12px_30px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.15)] border-2 border-slate-700/80 relative">
+        <div class="w-64 sm:w-72 md:w-80 bg-gradient-to-b from-[#1e2738] to-[#121824] rounded-2xl p-3 shadow-[0_15px_35px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.15)] border-2 border-slate-700/80 relative">
           <!-- Monitor Glass Screen -->
-          <div class="bg-[#080c14] rounded-xl py-2 px-3 border border-slate-800 flex items-center justify-center relative overflow-hidden shadow-inner">
+          <div class="bg-[#080c14] rounded-xl py-2.5 px-4 border border-slate-800 flex items-center justify-center relative overflow-hidden shadow-inner">
             <div class="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.45)_50%)] bg-[length:100%_4px] pointer-events-none opacity-40"></div>
 
             <!-- Red LED Digital Timer -->
             <div class="flex items-baseline space-x-1 z-10">
-              <span id="countdownNumber" class="led-timer text-3xl sm:text-4xl font-extrabold tracking-wider opacity-60">45</span>
-              <span class="led-timer text-xl sm:text-2xl font-bold opacity-60">s</span>
+              <span id="countdownNumber" class="led-timer text-4xl sm:text-5xl font-extrabold tracking-wider opacity-60">45</span>
+              <span class="led-timer text-2xl sm:text-3xl font-bold opacity-60">s</span>
             </div>
           </div>
 
           <!-- Monitor Bottom Bar: TIME LEFT + 3 Status Dots -->
-          <div class="flex items-center justify-between px-2 pt-2 text-[10px] font-bold tracking-widest text-slate-400 uppercase">
+          <div class="flex items-center justify-between px-2 pt-2 text-xs font-bold tracking-widest text-slate-400 uppercase">
             <span id="timerStatusLabel">STANDBY</span>
             <div class="flex items-center space-x-1.5">
-              <span id="statusDot1" class="w-2 h-2 rounded-full bg-slate-700"></span>
-              <span id="statusDot2" class="w-2 h-2 rounded-full bg-slate-700"></span>
-              <span id="statusDot3" class="w-2 h-2 rounded-full bg-slate-700"></span>
+              <span id="statusDot1" class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+              <span id="statusDot2" class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+              <span id="statusDot3" class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
             </div>
           </div>
         </div>
@@ -234,7 +234,7 @@
     </div>
 
     <!-- RIGHT COLUMN: TARGET CARD, ACTION CONTROLS & STATUS -->
-    <div class="w-full max-w-lg lg:max-w-xl flex flex-col justify-center space-y-4">
+    <div class="w-full max-w-lg lg:max-w-xl flex flex-col justify-center space-y-5">
       
       <!-- TARGET ITEM CARD COMPONENT -->
       <div id="targetCardWrapper" class="w-full relative fade-enter">
@@ -638,8 +638,8 @@
     function setupMarqueeBulbs() {
       const container = document.getElementById('lightsContainer');
       container.innerHTML = '';
-      const totalBulbs = 12;
-      const radiusPercent = 48.2;
+      const totalBulbs = 16;
+      const radiusPercent = 48.6;
 
       for (let i = 0; i < totalBulbs; i++) {
         const angle = (i * (360 / totalBulbs) - 90) * (Math.PI / 180);
@@ -647,7 +647,7 @@
         const y = 50 + radiusPercent * Math.sin(angle);
 
         const bulb = document.createElement('div');
-        bulb.className = 'light-bulb absolute w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-[#ffea79] border border-[#a16207] shadow-lg transform -translate-x-1/2 -translate-y-1/2';
+        bulb.className = 'light-bulb absolute w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#ffea79] border-2 border-[#a16207] shadow-lg transform -translate-x-1/2 -translate-y-1/2';
         bulb.style.left = `${x}%`;
         bulb.style.top = `${y}%`;
         container.appendChild(bulb);
@@ -692,16 +692,16 @@
 
         // Slice borders
         ctx.strokeStyle = '#1e293b';
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 6;
         ctx.stroke();
 
         // Subtle inner glow
         ctx.save();
         ctx.clip();
         ctx.beginPath();
-        ctx.arc(0, 0, radius - 4, start, end);
-        ctx.strokeStyle = 'rgba(255,255,255,0.18)';
-        ctx.lineWidth = 6;
+        ctx.arc(0, 0, radius - 6, start, end);
+        ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+        ctx.lineWidth = 10;
         ctx.stroke();
         ctx.restore();
 
@@ -713,22 +713,22 @@
         ctx.textBaseline = 'middle';
 
         if (item.completed) {
-          ctx.font = 'bold 36px Inter, sans-serif';
+          ctx.font = 'bold 58px Inter, sans-serif';
           ctx.fillStyle = '#94a3b8';
-          ctx.fillText('✓', radius * 0.65, 0);
+          ctx.fillText('✓', radius * 0.68, 0);
         } else {
           const lines = item.shortLabel.split('\n');
           ctx.fillStyle = '#ffffff';
-          ctx.font = '900 24px Inter, sans-serif';
-          ctx.shadowColor = 'rgba(0,0,0,0.6)';
-          ctx.shadowBlur = 4;
+          ctx.font = '900 38px Inter, sans-serif';
+          ctx.shadowColor = 'rgba(0,0,0,0.7)';
+          ctx.shadowBlur = 6;
 
           if (lines.length === 2) {
-            ctx.fillText(lines[1], radius * 0.76, -12);
-            ctx.font = 'bold 20px Inter, sans-serif';
-            ctx.fillText(lines[0], radius * 0.76, 14);
+            ctx.fillText(lines[1], radius * 0.77, -18);
+            ctx.font = 'bold 30px Inter, sans-serif';
+            ctx.fillText(lines[0], radius * 0.77, 24);
           } else {
-            ctx.fillText(item.shortLabel, radius * 0.76, 0);
+            ctx.fillText(item.shortLabel, radius * 0.77, 0);
           }
         }
         ctx.restore();
