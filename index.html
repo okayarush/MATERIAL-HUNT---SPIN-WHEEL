@@ -9,23 +9,21 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Rye&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@800;900&family=Orbitron:wght@700;900&family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Rye&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     :root {
       --bg-dark: #070c18;
-      --card-bg: #0b1329;
       --gold-primary: #f5b324;
-      --gold-deep: #b87b10;
       --accent-red: #ea384c;
     }
 
     body {
       background-color: var(--bg-dark);
       background-image: 
-        radial-gradient(circle at 50% 20%, rgba(30, 58, 138, 0.25) 0%, transparent 60%),
-        radial-gradient(rgba(245, 179, 36, 0.15) 1.5px, transparent 1.5px);
+        radial-gradient(circle at 50% 15%, rgba(59, 130, 246, 0.22) 0%, transparent 65%),
+        radial-gradient(rgba(245, 179, 36, 0.18) 1.5px, transparent 1.5px);
       background-size: 100% 100%, 26px 26px;
       font-family: 'Plus Jakarta Sans', sans-serif;
       min-height: 100vh;
@@ -33,37 +31,37 @@
       color: #fff;
     }
 
-    .carnival-title {
+    /* Radiant, Glowing 24K Gold 3D Carnival Title */
+    .carnival-title-vibrant {
       font-family: 'Rye', serif;
-      letter-spacing: 2px;
-      text-shadow: 
-        0 2px 0 #4a2800,
-        0 4px 0 #2e1800,
-        0 8px 18px rgba(0,0,0,0.8),
-        0 0 25px rgba(245, 179, 36, 0.45);
-      background: linear-gradient(180deg, #fff7c2 0%, #fbd561 35%, #e59d17 70%, #9e5b02 100%);
+      letter-spacing: 4px;
+      background: linear-gradient(180deg, #ffffff 0%, #fff4a3 25%, #ffc83b 55%, #f59e0b 80%, #d97706 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 3px 0 #5b3000) 
+              drop-shadow(0 6px 1px #2a1400) 
+              drop-shadow(0 0 25px rgba(255, 193, 7, 0.9)) 
+              drop-shadow(0 0 50px rgba(245, 158, 11, 0.5));
     }
 
     .wheel-bezel {
       background: radial-gradient(circle, #5a380e 0%, #2b1803 100%);
       border: 14px solid #caa048;
       box-shadow: 
-        inset 0 0 20px rgba(0, 0, 0, 0.9),
+        inset 0 0 25px rgba(0, 0, 0, 0.95),
         0 0 0 5px #6e4b14,
-        0 0 35px rgba(245, 179, 36, 0.35),
-        0 20px 40px rgba(0, 0, 0, 0.8);
+        0 0 45px rgba(245, 179, 36, 0.45),
+        0 25px 50px rgba(0, 0, 0, 0.85);
       position: relative;
     }
 
     .marquee-bulb {
       position: absolute;
-      width: 14px;
-      height: 14px;
+      width: 15px;
+      height: 15px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ffdf79 40%, #e09612 100%);
-      box-shadow: 0 0 10px #ffe585, 0 0 18px #f5a623;
+      background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ffeb99 40%, #e09612 100%);
+      box-shadow: 0 0 10px #ffe585, 0 0 22px #f5a623;
       transform: translate(-50%, -50%);
       z-index: 25;
       transition: all 0.2s ease;
@@ -74,20 +72,20 @@
       border: 4px solid #1e293b;
       border-radius: 16px;
       box-shadow: 
-        inset 0 0 15px rgba(0, 0, 0, 0.9),
-        0 12px 25px rgba(0, 0, 0, 0.6);
+        inset 0 0 18px rgba(0, 0, 0, 0.95),
+        0 14px 28px rgba(0, 0, 0, 0.7);
       position: relative;
     }
 
     .led-text {
       font-family: 'Orbitron', monospace;
-      text-shadow: 0 0 12px rgba(234, 56, 76, 0.75), 0 0 22px rgba(234, 56, 76, 0.4);
+      text-shadow: 0 0 14px rgba(234, 56, 76, 0.85), 0 0 26px rgba(234, 56, 76, 0.5);
     }
 
     .target-card {
       background: #ffffff;
-      border-radius: 22px;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.75);
       position: relative;
     }
 
@@ -97,15 +95,15 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 8px;
+      height: 9px;
       background: linear-gradient(90deg, #ea384c, #f59e0b);
-      border-radius: 22px 22px 0 0;
+      border-radius: 24px 24px 0 0;
     }
   </style>
 </head>
 <body class="flex flex-col justify-between p-4 md:p-6 lg:p-8">
 
-  <!-- Floating Controls (Sound & Reset) -->
+  <!-- Floating Controls -->
   <div class="fixed top-5 right-5 z-50 flex items-center gap-3">
     <button id="soundToggleBtn" class="w-11 h-11 rounded-full bg-slate-900/80 border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-white backdrop-blur shadow-lg transition active:scale-95" title="Toggle Sound">
       <span id="soundIcon">🔊</span>
@@ -117,52 +115,53 @@
     </button>
   </div>
 
-  <!-- Header Section: Logo + Big Title -->
-  <header class="w-full flex flex-col items-center justify-center mb-6 text-center">
-    <!-- MIB Logo (Supports MIB LOGO MAIN.webp with auto fallback) -->
-    <div class="mb-2 flex items-center justify-center">
+  <!-- Giant Header: Big MIB Logo + Radiant Gold Title -->
+  <header class="w-full flex flex-col items-center justify-center mb-6 text-center select-none">
+    
+    <!-- Huge MIB Lion Logo -->
+    <div class="w-full flex items-center justify-center mb-3">
       <img 
         id="mainLogo"
         src="./MIB LOGO MAIN.webp" 
         onerror="this.onerror=null; this.src='./logo.png'; this.onerror=function(){this.src='./logo.jpg';};" 
-        alt="Make In BVB Logo" 
-        class="h-28 md:h-36 lg:h-40 w-auto object-contain drop-shadow-[0_4px_16px_rgba(245,179,36,0.25)] transition duration-300 hover:scale-105"
+        alt="Make In BVB Lion Logo" 
+        class="w-64 sm:w-80 md:w-[460px] lg:w-[560px] max-h-56 object-contain filter drop-shadow-[0_0_30px_rgba(245,179,36,0.35)] transition-transform duration-300 hover:scale-105"
       />
     </div>
 
-    <h1 class="carnival-title text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-wider">
+    <!-- Glowing 24K Gold Title -->
+    <h1 class="carnival-title-vibrant text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-wider py-1">
       SPIN THE WHEEL
     </h1>
-    <p class="text-amber-300/80 tracking-[0.25em] text-xs sm:text-sm font-bold uppercase mt-1">
-      Make In BVB • Inspiring Minds To Innovate
-    </p>
+
+    <!-- Subtitle Badge -->
+    <div class="inline-flex items-center gap-2 mt-2 px-5 py-1.5 rounded-full bg-amber-500/10 border border-amber-400/30 backdrop-blur-sm">
+      <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+      <p class="text-amber-300 font-extrabold tracking-[0.25em] text-xs sm:text-sm uppercase">
+        Make In BVB • Inspiring Minds To Innovate
+      </p>
+    </div>
   </header>
 
-  <!-- Main Landscape Layout: Side-by-Side (Wheel on Left, Challenge on Right) -->
+  <!-- Landscape Layout (Left: Giant Wheel & CRT Timer, Right: Challenge Card) -->
   <main class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center flex-1 my-auto">
     
-    <!-- LEFT COLUMN: Huge Wheel & CRT Countdown Timer -->
+    <!-- LEFT: Giant Wheel & Timer -->
     <section class="lg:col-span-6 flex flex-col items-center justify-center relative">
       
-      <!-- The Giant Wheel Wrapper -->
       <div class="relative flex items-center justify-center">
-        
-        <!-- Top Indicator Needle -->
+        <!-- Top Pointer Needle -->
         <div class="absolute -top-7 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center pointer-events-none filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
           <div class="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-t-[34px] border-t-amber-400"></div>
           <div class="w-3.5 h-3.5 rounded-full bg-red-600 border-2 border-white -mt-1 shadow-md"></div>
         </div>
 
-        <!-- Wheel Outer Bezel with Bulbs -->
+        <!-- Wheel Rim & Canvas -->
         <div id="wheelContainer" class="wheel-bezel rounded-full p-2 relative w-[340px] h-[340px] sm:w-[420px] sm:h-[420px] md:w-[470px] md:h-[470px] xl:w-[510px] xl:h-[510px] flex items-center justify-center cursor-pointer select-none">
-          
-          <!-- Marquee Bulbs inserted dynamically around the rim -->
           <div id="bulbsContainer" class="absolute inset-0 pointer-events-none"></div>
-
-          <!-- The Canvas (Explicit 800x800 resolution for sharp rendering) -->
           <canvas id="wheelCanvas" width="800" height="800" class="w-full h-full rounded-full"></canvas>
 
-          <!-- Center Golden Hub / Spin Trigger -->
+          <!-- Center Gold Hub -->
           <div id="centerSpinHub" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-amber-300 via-amber-500 to-amber-700 border-4 border-yellow-200 shadow-[0_0_20px_rgba(0,0,0,0.8)] flex items-center justify-center z-20 hover:scale-105 active:scale-95 transition">
             <span class="text-slate-900 text-2xl sm:text-3xl font-black">★</span>
           </div>
@@ -171,13 +170,11 @@
 
       <!-- Retro CRT Digital Countdown Monitor -->
       <div class="relative mt-8 flex flex-col items-center">
-        <!-- Dual Wire TV Antennas -->
         <div class="flex justify-between w-28 -mb-1 opacity-70 pointer-events-none">
           <div class="w-0.5 h-7 bg-slate-400 rotate-[-35deg] origin-bottom-right"></div>
           <div class="w-0.5 h-7 bg-slate-400 rotate-[35deg] origin-bottom-left"></div>
         </div>
 
-        <!-- Monitor Body -->
         <div class="crt-monitor px-7 py-3 flex items-center justify-between gap-6 min-w-[240px]">
           <div>
             <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" id="timerLabel">TIME LEFT</div>
@@ -192,39 +189,36 @@
       </div>
     </section>
 
-    <!-- RIGHT COLUMN: Target Card & Game Controls -->
+    <!-- RIGHT: Challenge Card & Controls -->
     <section class="lg:col-span-6 flex flex-col items-center justify-center max-w-lg mx-auto w-full">
       
-      <!-- Challenge Card -->
+      <!-- Target Challenge Card -->
       <div id="targetCard" class="target-card w-full p-6 sm:p-8 text-slate-900 transition-all duration-300">
         
-        <!-- Yellow Sparkle Badge in top right corner -->
         <div class="absolute -top-3 -right-3 w-8 h-8 rounded-lg bg-amber-400 border border-amber-200 shadow-md flex items-center justify-center text-slate-900 font-bold rotate-12">
           ✦
         </div>
 
-        <!-- Card Header -->
         <div class="text-center mb-4">
           <div id="cardStatusBadge" class="text-xs font-black uppercase tracking-widest text-amber-600">
             READY TO PLAY?
           </div>
         </div>
 
-        <!-- Dashed Challenge Content Box -->
         <div id="challengeBox" class="border-2 border-dashed border-slate-300 rounded-xl p-5 sm:p-6 bg-slate-50/70 text-center min-h-[170px] flex flex-col items-center justify-center transition-all">
           <div id="challengeIcon" class="text-3xl mb-2">🎲</div>
           <div id="challengeSubtitle" class="text-xs uppercase font-extrabold tracking-wider text-slate-400 mb-1">
             STATUS: STANDBY
           </div>
           <h2 id="challengeTitle" class="text-xl sm:text-2xl font-black text-slate-800 leading-snug">
-            Spin the wheel above to reveal your hunt challenge!
+            Spin the wheel to reveal your next challenge!
           </h2>
           <div id="itemTag" class="hidden mt-3 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">
             Target Challenge
           </div>
         </div>
 
-        <!-- Action Button: Spin / Claim -->
+        <!-- Action Buttons -->
         <div class="mt-6 flex flex-col gap-3">
           <button id="mainActionBtn" class="w-full py-4 px-6 rounded-xl font-extrabold text-base sm:text-lg bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/30 hover:brightness-105 active:scale-[0.98] transition flex items-center justify-center gap-2">
             <span>🎲</span>
@@ -269,7 +263,6 @@
   </div>
 
   <script>
-    // 10 Exact Challenge Items
     const HUNT_ITEMS = [
       { id: 1, title: "Bring 3 diff wires of charging like c, normal, phone", color: "#e62238", label: "MIB 1" },
       { id: 2, title: "Bring 5 different shapes of leaves", color: "#1447e6", label: "Magic 2" },
@@ -287,7 +280,7 @@
     let currentAngle = 0;
     let isSpinning = false;
     let selectedItem = null;
-    let gameState = "IDLE"; // "IDLE", "SPINNING", "HUNTING", "FOUND", "COMPLETE"
+    let gameState = "IDLE";
     let timerDuration = 45;
     let timerRemaining = 45;
     let timerInterval = null;
@@ -296,12 +289,8 @@
     // Web Audio Synthesizer
     let audioCtx = null;
     function getAudioContext() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       return audioCtx;
     }
 
@@ -342,7 +331,7 @@
       } catch(e) {}
     }
 
-    // Canvas Wheel Drawing
+    // Canvas Wheel
     const canvas = document.getElementById("wheelCanvas");
     const ctx = canvas.getContext("2d");
 
@@ -364,19 +353,13 @@
         ctx.arc(centerX, centerY, radius, angle, angle + arc);
         ctx.closePath();
 
-        if (item.completed) {
-          ctx.fillStyle = "#334155";
-        } else {
-          ctx.fillStyle = item.color;
-        }
+        ctx.fillStyle = item.completed ? "#334155" : item.color;
         ctx.fill();
 
-        // Edge separator line
         ctx.strokeStyle = "#caa048";
         ctx.lineWidth = 4;
         ctx.stroke();
 
-        // Draw Slice Labels & Text
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(angle + arc / 2);
@@ -399,7 +382,7 @@
         ctx.restore();
       });
 
-      // Outer inner-ring stroke
+      // Outer inner border
       ctx.beginPath();
       ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
       ctx.strokeStyle = "#eab308";
@@ -407,7 +390,6 @@
       ctx.stroke();
     }
 
-    // Build Marquee Bulbs around rim
     function createMarqueeBulbs() {
       const bulbsContainer = document.getElementById("bulbsContainer");
       bulbsContainer.innerHTML = "";
@@ -416,20 +398,17 @@
         const angle = (i / totalBulbs) * (2 * Math.PI);
         const bulb = document.createElement("div");
         bulb.className = "marquee-bulb";
-        const x = 50 + 49 * Math.cos(angle);
-        const y = 50 + 49 * Math.sin(angle);
-        bulb.style.left = `${x}%`;
-        bulb.style.top = `${y}%`;
+        bulb.style.left = `${50 + 49 * Math.cos(angle)}%`;
+        bulb.style.top = `${50 + 49 * Math.sin(angle)}%`;
         bulbsContainer.appendChild(bulb);
       }
     }
 
-    // Wheel Spin Physics
     function spinWheel() {
       if (isSpinning) return;
       const uncompleted = items.filter(it => !it.completed);
       if (uncompleted.length === 0) {
-        alert("Awesome! All 10 challenges are already completed!");
+        alert("All 10 challenges are already completed!");
         return;
       }
 
@@ -437,42 +416,36 @@
       gameState = "SPINNING";
       clearInterval(timerInterval);
 
-      // Update Card to Spinning Mode
       document.getElementById("cardStatusBadge").innerText = "SPINNING...";
       document.getElementById("cardStatusBadge").className = "text-xs font-black uppercase tracking-widest text-amber-500 animate-pulse";
       document.getElementById("challengeIcon").innerText = "⚙️";
       document.getElementById("challengeSubtitle").innerText = "CHOOSING TARGET...";
-      document.getElementById("challengeTitle").innerText = "Hold tight, selecting your next material hunt challenge...";
+      document.getElementById("challengeTitle").innerText = "Selecting your next material hunt challenge...";
       document.getElementById("itemTag").classList.add("hidden");
       document.getElementById("mainActionBtn").disabled = true;
       document.getElementById("mainActionBtn").classList.add("opacity-60", "cursor-not-allowed");
 
-      // Random target calculation
       const targetItem = uncompleted[Math.floor(Math.random() * uncompleted.length)];
       const targetIndex = items.findIndex(it => it.id === targetItem.id);
       const arc = (2 * Math.PI) / items.length;
 
-      // Top indicator sits at -PI/2 (270 degrees)
       const targetAngleCenter = -(targetIndex * arc + arc / 2) - Math.PI / 2;
-      const spins = 5 + Math.floor(Math.random() * 3); // 5 to 7 full rotations
+      const spins = 5 + Math.floor(Math.random() * 3);
       const targetTotalAngle = currentAngle + (spins * 2 * Math.PI) + ((targetAngleCenter - (currentAngle % (2 * Math.PI)) + 4 * Math.PI) % (2 * Math.PI));
 
       const startAngle = currentAngle;
       const deltaAngle = targetTotalAngle - startAngle;
-      const duration = 4200; // 4.2 seconds
+      const duration = 4200;
       const startTime = performance.now();
       let lastTickAngle = currentAngle;
 
       function animateSpin(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        
-        // Cubic ease out
         const ease = 1 - Math.pow(1 - progress, 3);
         currentAngle = startAngle + deltaAngle * ease;
         drawWheel();
 
-        // Tick on crossing segments
         if (Math.abs(currentAngle - lastTickAngle) > arc) {
           playTick();
           lastTickAngle = currentAngle;
@@ -494,7 +467,6 @@
       gameState = "HUNTING";
       playFanfare();
 
-      // Update Target Card
       document.getElementById("cardStatusBadge").innerText = "TARGET ACQUIRED";
       document.getElementById("cardStatusBadge").className = "text-xs font-black uppercase tracking-widest text-red-600";
       document.getElementById("challengeIcon").innerText = "🎯";
@@ -505,14 +477,12 @@
       itemTag.innerText = `Challenge #${selectedItem.id}`;
       itemTag.classList.remove("hidden");
 
-      // Enable Action Button to "I FOUND IT!"
       const btn = document.getElementById("mainActionBtn");
       btn.disabled = false;
       btn.classList.remove("opacity-60", "cursor-not-allowed");
       btn.className = "w-full py-4 px-6 rounded-xl font-extrabold text-base sm:text-lg bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-green-500/30 hover:brightness-105 active:scale-[0.98] transition flex items-center justify-center gap-2";
       document.getElementById("btnText").innerText = "I FOUND THIS ITEM!";
 
-      // Start 45s Countdown
       startCountdown();
     }
 
@@ -538,11 +508,9 @@
     function updateTimerDisplay() {
       const display = document.getElementById("timerDisplay");
       display.innerHTML = `${timerRemaining}<span class="text-xl">s</span>`;
-      if (timerRemaining <= 10) {
-        display.className = "led-text text-3xl sm:text-4xl font-extrabold text-red-500 animate-pulse";
-      } else {
-        display.className = "led-text text-3xl sm:text-4xl font-extrabold text-red-500";
-      }
+      display.className = timerRemaining <= 10 
+        ? "led-text text-3xl sm:text-4xl font-extrabold text-red-500 animate-pulse" 
+        : "led-text text-3xl sm:text-4xl font-extrabold text-red-500";
     }
 
     function onTimeExpired() {
@@ -558,25 +526,18 @@
       if (!selectedItem) return;
       clearInterval(timerInterval);
 
-      // Mark Item as Completed
       const itemRef = items.find(it => it.id === selectedItem.id);
       if (itemRef) itemRef.completed = true;
 
       drawWheel();
       updateProgress();
 
-      // Confetti burst
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
+      confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
 
-      // Check if all completed
       const remaining = items.filter(it => !it.completed).length;
       if (remaining === 0) {
         document.getElementById("cardStatusBadge").innerText = "CONGRATULATIONS!";
-        document.getElementById("challengeTitle").innerText = "🎉 You successfully completed all 10 scavenger hunt challenges!";
+        document.getElementById("challengeTitle").innerText = "🎉 All 10 challenges completed!";
         document.getElementById("btnText").innerText = "HUNT COMPLETED!";
         document.getElementById("mainActionBtn").disabled = true;
       } else {
@@ -613,7 +574,7 @@
       document.getElementById("cardStatusBadge").className = "text-xs font-black uppercase tracking-widest text-amber-600";
       document.getElementById("challengeIcon").innerText = "🎲";
       document.getElementById("challengeSubtitle").innerText = "STATUS: STANDBY";
-      document.getElementById("challengeTitle").innerText = "Spin the wheel above to reveal your hunt challenge!";
+      document.getElementById("challengeTitle").innerText = "Spin the wheel to reveal your next challenge!";
       document.getElementById("itemTag").classList.add("hidden");
 
       const btn = document.getElementById("mainActionBtn");
@@ -622,7 +583,6 @@
       document.getElementById("btnText").innerText = "SPIN WHEEL TO START";
     }
 
-    // Modal Tasks Drawer
     function renderTasksList() {
       const container = document.getElementById("tasksList");
       container.innerHTML = "";
@@ -662,7 +622,6 @@
 
     document.getElementById("resetGameBtn").addEventListener("click", resetGame);
 
-    // Audio & Modal
     document.getElementById("soundToggleBtn").addEventListener("click", () => {
       soundEnabled = !soundEnabled;
       document.getElementById("soundIcon").innerText = soundEnabled ? "🔊" : "🔇";
@@ -681,7 +640,6 @@
       document.getElementById("tasksModal").classList.add("hidden");
     });
 
-    // Initialize
     window.addEventListener("DOMContentLoaded", () => {
       createMarqueeBulbs();
       resetGame();
