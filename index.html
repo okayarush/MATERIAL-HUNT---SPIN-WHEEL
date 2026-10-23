@@ -1,1186 +1,691 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Material Hunt - Make In BVB</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Material Hunt - Spin The Wheel</title>
+  
+  <!-- Tailwind CSS & Fonts -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Inter:wght@400;600;700;800;900&family=Orbitron:wght@700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
-  <!-- Canvas Confetti for celebrations -->
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Orbitron:wght@600;800;900&family=Plus+Jakarta+Sans:wght@500;700;800;900&family=Rye&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     :root {
-      --bg-dark: #080d19;
-      --card-bg: #0f172a;
+      --bg-dark: #070c18;
+      --card-bg: #0b1329;
+      --gold-primary: #f5b324;
+      --gold-deep: #b87b10;
+      --accent-red: #ea384c;
     }
 
     body {
       background-color: var(--bg-dark);
-      font-family: 'Inter', sans-serif;
-      color: #f8fafc;
+      background-image: 
+        radial-gradient(circle at 50% 20%, rgba(30, 58, 138, 0.25) 0%, transparent 60%),
+        radial-gradient(rgba(245, 179, 36, 0.15) 1.5px, transparent 1.5px);
+      background-size: 100% 100%, 26px 26px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
       overflow-x: hidden;
-      touch-action: manipulation;
-      user-select: none;
-      -webkit-user-select: none;
+      color: #fff;
     }
 
-    /* Dot grid background pattern matching reference screenshot */
-    .bg-dot-pattern {
-      background-color: #0b1120;
-      background-image: radial-gradient(rgba(239, 68, 68, 0.28) 1.5px, transparent 1.5px),
-                        radial-gradient(rgba(59, 130, 246, 0.22) 1.5px, transparent 1.5px);
-      background-size: 28px 28px;
-      background-position: 0 0, 14px 14px;
-    }
-
-    /* Grand Carnival Golden Title Typography */
     .carnival-title {
-      font-family: 'Cinzel', serif;
+      font-family: 'Rye', serif;
       letter-spacing: 2px;
-      background: linear-gradient(180deg, #fff2a3 0%, #ffd043 35%, #e6a117 65%, #8a5700 100%);
+      text-shadow: 
+        0 2px 0 #4a2800,
+        0 4px 0 #2e1800,
+        0 8px 18px rgba(0,0,0,0.8),
+        0 0 25px rgba(245, 179, 36, 0.45);
+      background: linear-gradient(180deg, #fff7c2 0%, #fbd561 35%, #e59d17 70%, #9e5b02 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.7)) drop-shadow(0 0 16px rgba(245, 158, 11, 0.45));
     }
 
-    /* CRT Red Digital LED Glow */
-    .led-timer {
+    .wheel-bezel {
+      background: radial-gradient(circle, #5a380e 0%, #2b1803 100%);
+      border: 14px solid #caa048;
+      box-shadow: 
+        inset 0 0 20px rgba(0, 0, 0, 0.9),
+        0 0 0 5px #6e4b14,
+        0 0 35px rgba(245, 179, 36, 0.35),
+        0 20px 40px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+
+    .marquee-bulb {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ffffff 0%, #ffdf79 40%, #e09612 100%);
+      box-shadow: 0 0 10px #ffe585, 0 0 18px #f5a623;
+      transform: translate(-50%, -50%);
+      z-index: 25;
+      transition: all 0.2s ease;
+    }
+
+    .crt-monitor {
+      background: #090e1a;
+      border: 4px solid #1e293b;
+      border-radius: 16px;
+      box-shadow: 
+        inset 0 0 15px rgba(0, 0, 0, 0.9),
+        0 12px 25px rgba(0, 0, 0, 0.6);
+      position: relative;
+    }
+
+    .led-text {
       font-family: 'Orbitron', monospace;
-      color: #ff3344;
-      text-shadow: 0 0 12px rgba(255, 51, 68, 0.85),
-                   0 0 24px rgba(255, 51, 68, 0.5),
-                   0 0 35px rgba(255, 51, 68, 0.3);
+      text-shadow: 0 0 12px rgba(234, 56, 76, 0.75), 0 0 22px rgba(234, 56, 76, 0.4);
     }
 
-    /* Marquee Light Bulbs Pulsing Glow */
-    @keyframes bulbPulse {
-      0%, 100% {
-        box-shadow: 0 0 12px 3px rgba(255, 235, 120, 0.95), 0 0 22px 6px rgba(245, 158, 11, 0.7);
-        filter: brightness(1.25);
-      }
-      50% {
-        box-shadow: 0 0 6px 1px rgba(255, 235, 120, 0.5), 0 0 12px 2px rgba(245, 158, 11, 0.35);
-        filter: brightness(0.9);
-      }
+    .target-card {
+      background: #ffffff;
+      border-radius: 22px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+      position: relative;
     }
 
-    .light-bulb {
-      animation: bulbPulse 1.6s infinite ease-in-out;
-    }
-    .light-bulb:nth-child(even) {
-      animation-delay: 0.8s;
-    }
-
-    /* Wheel Pointer Needle Drop Shadow */
-    .pointer-shadow {
-      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 10px rgba(239, 68, 68, 0.8));
-    }
-
-    /* Realistic Card Shadow */
-    .target-card-shadow {
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8),
-                  0 0 0 1px rgba(255, 255, 255, 0.1);
-    }
-
-    /* Seamless Logo Styling - Natural colors, crisp rendering, glowing backdrop */
-    .pure-logo-img {
-      filter: drop-shadow(0 6px 20px rgba(251, 191, 36, 0.35));
-    }
-
-    /* Smooth animated transitions */
-    .fade-enter {
-      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
-    }
-
-    .mib-font {
-      font-family: 'Bebas Neue', sans-serif;
+    .target-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: linear-gradient(90deg, #ea384c, #f59e0b);
+      border-radius: 22px 22px 0 0;
     }
   </style>
 </head>
-<body class="bg-dot-pattern min-h-screen text-slate-100 flex flex-col justify-between selection:bg-amber-500 selection:text-black">
+<body class="flex flex-col justify-between p-4 md:p-6 lg:p-8">
 
-  <!-- TOP FLOATING UTILITY CONTROLS (Sound & Minimal Icon Only) -->
-  <div class="fixed top-3 right-4 z-50 flex items-center gap-2">
-    <!-- Sound Button -->
-    <button id="soundToggleBtn" aria-label="Toggle Sound" class="h-10 w-10 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 flex items-center justify-center border border-slate-700/80 transition active:scale-95 shadow-xl backdrop-blur-md">
-      <svg id="soundOnIcon" class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z"/>
-      </svg>
-      <svg id="soundOffIcon" class="w-5 h-5 text-slate-500 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-        <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/>
-      </svg>
+  <!-- Floating Controls (Sound & Reset) -->
+  <div class="fixed top-5 right-5 z-50 flex items-center gap-3">
+    <button id="soundToggleBtn" class="w-11 h-11 rounded-full bg-slate-900/80 border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-white backdrop-blur shadow-lg transition active:scale-95" title="Toggle Sound">
+      <span id="soundIcon">🔊</span>
     </button>
-
-    <!-- Checklist Icon Button (Text removed) -->
-    <button id="openTasksBtn" aria-label="View Tasks List" class="h-10 w-10 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 border border-slate-700/80 transition active:scale-95 shadow-xl backdrop-blur-md flex items-center justify-center">
-      <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="1.5" />
-        <circle cx="6" cy="12" r="1.5" />
-        <circle cx="18" cy="12" r="1.5" />
+    <button id="tasksBtn" class="w-11 h-11 rounded-full bg-slate-900/80 border border-slate-700/80 flex items-center justify-center text-slate-300 hover:text-white backdrop-blur shadow-lg transition active:scale-95" title="All Tasks Checklist">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"/>
       </svg>
     </button>
   </div>
 
-  <!-- GRAND CENTER HEADER: HUGE MIB LOGO (NO BORDER, NO BACKGROUND) + "SPIN THE WHEEL" TITLE -->
-  <header class="w-full pt-4 pb-2 px-4 flex flex-col items-center justify-center text-center z-30">
-    
-    <!-- Large MIB Lion Logo - Scaled Up, Natural Graphic Details -->
-    <div class="relative mb-3 flex items-center justify-center">
-      <div class="w-72 sm:w-96 md:w-[480px] lg:w-[560px] h-36 sm:h-48 md:h-64 flex items-center justify-center">
-        <img 
-          id="mibLogoImg"
-          src="./logo.png" 
-          alt="Make In BVB Lion Logo" 
-          class="pure-logo-img w-full h-full object-contain transition-transform duration-300 hover:scale-105"
-          onerror="this.onerror=null; this.src='./logo.jpg';"
-        />
-      </div>
+  <!-- Header Section: Logo + Big Title -->
+  <header class="w-full flex flex-col items-center justify-center mb-6 text-center">
+    <!-- MIB Logo (Supports MIB LOGO MAIN.webp with auto fallback) -->
+    <div class="mb-2 flex items-center justify-center">
+      <img 
+        id="mainLogo"
+        src="./MIB LOGO MAIN.webp" 
+        onerror="this.onerror=null; this.src='./logo.png'; this.onerror=function(){this.src='./logo.jpg';};" 
+        alt="Make In BVB Logo" 
+        class="h-28 md:h-36 lg:h-40 w-auto object-contain drop-shadow-[0_4px_16px_rgba(245,179,36,0.25)] transition duration-300 hover:scale-105"
+      />
     </div>
 
-    <!-- Title: SPIN THE WHEEL -->
-    <h1 class="carnival-title text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-[0.18em] leading-tight drop-shadow-xl">
+    <h1 class="carnival-title text-4xl sm:text-5xl md:text-6xl font-black uppercase tracking-wider">
       SPIN THE WHEEL
     </h1>
-    <p class="text-xs sm:text-base font-black tracking-[0.3em] text-amber-300 uppercase mt-1">
-      MAKE IN BVB • INSPIRING MINDS TO INNOVATE
+    <p class="text-amber-300/80 tracking-[0.25em] text-xs sm:text-sm font-bold uppercase mt-1">
+      Make In BVB • Inspiring Minds To Innovate
     </p>
   </header>
 
-  <!-- MAIN LANDSCAPE DUAL-COLUMN CONTAINER -->
-  <main class="flex-1 w-full max-w-7xl mx-auto px-4 lg:px-8 py-3 lg:py-6 flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-14">
+  <!-- Main Landscape Layout: Side-by-Side (Wheel on Left, Challenge on Right) -->
+  <main class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center flex-1 my-auto">
     
-    <!-- LEFT COLUMN: CARNIVAL WHEEL + CRT MONITOR -->
-    <div class="flex flex-col items-center justify-center shrink-0">
+    <!-- LEFT COLUMN: Huge Wheel & CRT Countdown Timer -->
+    <section class="lg:col-span-6 flex flex-col items-center justify-center relative">
       
-      <!-- Carnival Wheel Component (Enlarged to massive size) -->
-      <div class="relative w-[380px] h-[380px] sm:w-[460px] sm:h-[460px] md:w-[520px] md:h-[520px] xl:w-[580px] xl:h-[580px] flex items-center justify-center transition-all">
-
-        <!-- Outer Glowing Gold Marquee Rim -->
-        <div class="absolute inset-0 rounded-full border-[10px] sm:border-[12px] border-[#c98a1a] shadow-[0_0_55px_rgba(234,179,8,0.45),inset_0_0_28px_rgba(0,0,0,0.85)] bg-[#2b1704]"></div>
-
-        <!-- Inner Bezel Ring with metallic sheen -->
-        <div class="absolute inset-[8px] sm:inset-[10px] rounded-full border-[5px] sm:border-[6px] border-[#ffd859] pointer-events-none"></div>
-
-        <!-- Marquee Light Bulbs (16 bulbs around rim) -->
-        <div id="lightsContainer" class="absolute inset-0 pointer-events-none"></div>
-
-        <!-- Wheel Canvas Container -->
-        <div class="relative w-[340px] h-[340px] sm:w-[416px] sm:h-[416px] md:w-[472px] md:h-[472px] xl:w-[526px] xl:h-[526px] rounded-full overflow-hidden shadow-2xl">
-          <canvas id="wheelCanvas" width="1000" height="1000" class="w-full h-full transform transition-transform duration-75"></canvas>
+      <!-- The Giant Wheel Wrapper -->
+      <div class="relative flex items-center justify-center">
+        
+        <!-- Top Indicator Needle -->
+        <div class="absolute -top-7 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center pointer-events-none filter drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)]">
+          <div class="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-t-[34px] border-t-amber-400"></div>
+          <div class="w-3.5 h-3.5 rounded-full bg-red-600 border-2 border-white -mt-1 shadow-md"></div>
         </div>
 
-        <!-- Top Indicator Needle (Golden Arrow with Red Core) -->
-        <div class="absolute -top-4 sm:-top-5 z-30 flex flex-col items-center pointer-shadow pointer-events-none">
-          <div class="w-0 h-0 border-l-[18px] sm:border-l-[22px] border-l-transparent border-r-[18px] sm:border-r-[22px] border-r-transparent border-t-[34px] sm:border-t-[42px] border-t-[#fcd34d] relative flex items-center justify-center">
-            <div class="absolute -top-[30px] sm:-top-[38px] w-0 h-0 border-l-[11px] sm:border-l-[14px] border-l-transparent border-r-[11px] sm:border-r-[14px] border-r-transparent border-t-[23px] sm:border-t-[28px] border-t-[#dc2626]"></div>
-            <div class="absolute -top-[42px] sm:-top-[52px] w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-amber-300 border-2 border-red-700 shadow-[0_0_12px_#f59e0b]"></div>
-          </div>
-        </div>
+        <!-- Wheel Outer Bezel with Bulbs -->
+        <div id="wheelContainer" class="wheel-bezel rounded-full p-2 relative w-[340px] h-[340px] sm:w-[420px] sm:h-[420px] md:w-[470px] md:h-[470px] xl:w-[510px] xl:h-[510px] flex items-center justify-center cursor-pointer select-none">
+          
+          <!-- Marquee Bulbs inserted dynamically around the rim -->
+          <div id="bulbsContainer" class="absolute inset-0 pointer-events-none"></div>
 
-        <!-- Center Golden Hub with Black Star Badge -->
-        <div id="spinCenterBtn" title="Click to Spin" class="absolute z-20 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full bg-gradient-to-b from-[#ffe57f] via-[#f59e0b] to-[#b45309] border-[4px] border-[#ffd54f] shadow-[0_6px_20px_rgba(0,0,0,0.8),inset_0_2px_6px_rgba(255,255,255,0.8)] flex items-center justify-center cursor-pointer active:scale-95 transition-transform hover:brightness-110">
-          <div class="w-11 h-11 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-[#f8be15] border-2 border-amber-200/60 shadow-inner flex items-center justify-center">
-            <svg class="w-7 h-7 sm:w-9 sm:h-9 md:w-10 md:h-10 text-slate-900 fill-current drop-shadow" viewBox="0 0 24 24">
-              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-            </svg>
-          </div>
-        </div>
+          <!-- The Canvas (Explicit 800x800 resolution for sharp rendering) -->
+          <canvas id="wheelCanvas" width="800" height="800" class="w-full h-full rounded-full"></canvas>
 
-      </div>
-
-      <!-- TV CRT MONITOR & DUAL ANTENNAS -->
-      <div class="relative w-full flex flex-col items-center mt-1 sm:mt-2">
-        <!-- Dual Antenna Wires from CRT to Wheel Bottom -->
-        <svg class="w-40 sm:w-48 h-10 text-slate-400/80 drop-shadow -mb-1" viewBox="0 0 160 36" fill="none">
-          <line x1="18" y1="2" x2="80" y2="34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-          <line x1="142" y1="2" x2="80" y2="34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-          <circle cx="80" cy="33" r="4" fill="#facc15" stroke="#78350f" stroke-width="1.5" class="shadow-lg shadow-amber-500/50"/>
-        </svg>
-
-        <!-- CRT Monitor Shell -->
-        <div class="w-64 sm:w-72 md:w-80 bg-gradient-to-b from-[#1e2738] to-[#121824] rounded-2xl p-3 shadow-[0_15px_35px_rgba(0,0,0,0.9),inset_0_1px_1px_rgba(255,255,255,0.15)] border-2 border-slate-700/80 relative">
-          <!-- Monitor Glass Screen -->
-          <div class="bg-[#080c14] rounded-xl py-2.5 px-4 border border-slate-800 flex items-center justify-center relative overflow-hidden shadow-inner">
-            <div class="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.45)_50%)] bg-[length:100%_4px] pointer-events-none opacity-40"></div>
-
-            <!-- Red LED Digital Timer -->
-            <div class="flex items-baseline space-x-1 z-10">
-              <span id="countdownNumber" class="led-timer text-4xl sm:text-5xl font-extrabold tracking-wider opacity-60">45</span>
-              <span class="led-timer text-2xl sm:text-3xl font-bold opacity-60">s</span>
-            </div>
-          </div>
-
-          <!-- Monitor Bottom Bar: TIME LEFT + 3 Status Dots -->
-          <div class="flex items-center justify-between px-2 pt-2 text-xs font-bold tracking-widest text-slate-400 uppercase">
-            <span id="timerStatusLabel">STANDBY</span>
-            <div class="flex items-center space-x-1.5">
-              <span id="statusDot1" class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
-              <span id="statusDot2" class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
-              <span id="statusDot3" class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
-            </div>
+          <!-- Center Golden Hub / Spin Trigger -->
+          <div id="centerSpinHub" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-amber-300 via-amber-500 to-amber-700 border-4 border-yellow-200 shadow-[0_0_20px_rgba(0,0,0,0.8)] flex items-center justify-center z-20 hover:scale-105 active:scale-95 transition">
+            <span class="text-slate-900 text-2xl sm:text-3xl font-black">★</span>
           </div>
         </div>
       </div>
 
-    </div>
+      <!-- Retro CRT Digital Countdown Monitor -->
+      <div class="relative mt-8 flex flex-col items-center">
+        <!-- Dual Wire TV Antennas -->
+        <div class="flex justify-between w-28 -mb-1 opacity-70 pointer-events-none">
+          <div class="w-0.5 h-7 bg-slate-400 rotate-[-35deg] origin-bottom-right"></div>
+          <div class="w-0.5 h-7 bg-slate-400 rotate-[35deg] origin-bottom-left"></div>
+        </div>
 
-    <!-- RIGHT COLUMN: TARGET CARD, ACTION CONTROLS & STATUS -->
-    <div class="w-full max-w-lg lg:max-w-xl flex flex-col justify-center space-y-5">
-      
-      <!-- TARGET ITEM CARD COMPONENT -->
-      <div id="targetCardWrapper" class="w-full relative fade-enter">
-        <div class="relative bg-white rounded-2xl p-5 sm:p-6 target-card-shadow border-t-4 border-amber-500 transition-all duration-300" id="targetCardContainer">
-
-          <!-- Yellow Sparkle Badge in Top-Right Corner -->
-          <div class="absolute -top-3.5 -right-2 bg-[#facc15] text-slate-900 border-2 border-slate-900 rounded-lg p-1.5 shadow-md flex items-center justify-center rotate-6">
-            <svg class="w-4 h-4 fill-current animate-spin" style="animation-duration: 6s;" viewBox="0 0 24 24">
-              <path d="M12 0l2.6 8.4L23 11l-8.4 2.6L12 22l-2.6-8.4L1 11l8.4-2.6z"/>
-            </svg>
+        <!-- Monitor Body -->
+        <div class="crt-monitor px-7 py-3 flex items-center justify-between gap-6 min-w-[240px]">
+          <div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest" id="timerLabel">TIME LEFT</div>
+            <div id="timerDisplay" class="led-text text-3xl sm:text-4xl font-extrabold text-red-500">45<span class="text-xl">s</span></div>
           </div>
+          <div class="flex items-center gap-1.5">
+            <span id="dot1" class="w-2.5 h-2.5 rounded-full bg-red-600 animate-pulse"></span>
+            <span id="dot2" class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+            <span id="dot3" class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+          </div>
+        </div>
+      </div>
+    </section>
 
-          <!-- Header -->
-          <h2 id="targetHeader" class="text-center text-xs sm:text-sm font-extrabold text-amber-600 tracking-wider uppercase mb-3">
+    <!-- RIGHT COLUMN: Target Card & Game Controls -->
+    <section class="lg:col-span-6 flex flex-col items-center justify-center max-w-lg mx-auto w-full">
+      
+      <!-- Challenge Card -->
+      <div id="targetCard" class="target-card w-full p-6 sm:p-8 text-slate-900 transition-all duration-300">
+        
+        <!-- Yellow Sparkle Badge in top right corner -->
+        <div class="absolute -top-3 -right-3 w-8 h-8 rounded-lg bg-amber-400 border border-amber-200 shadow-md flex items-center justify-center text-slate-900 font-bold rotate-12">
+          ✦
+        </div>
+
+        <!-- Card Header -->
+        <div class="text-center mb-4">
+          <div id="cardStatusBadge" class="text-xs font-black uppercase tracking-widest text-amber-600">
             READY TO PLAY?
-          </h2>
-
-          <!-- Dashed inner container box -->
-          <div class="border-2 border-dashed border-indigo-200 bg-slate-50/80 rounded-xl p-5 text-center min-h-[140px] flex flex-col items-center justify-center">
-            
-            <!-- Idle Mystery State (Before spin) -->
-            <div id="targetIdleState" class="flex flex-col items-center justify-center space-y-2 py-1">
-              <div class="text-3xl animate-bounce">❓</div>
-              <p class="text-base sm:text-lg font-extrabold text-slate-800">Mystery Challenge</p>
-              <p class="text-xs sm:text-sm text-slate-500 font-medium max-w-xs">
-                Spin the wheel to reveal your next scavenger hunt object!
-              </p>
-            </div>
-
-            <!-- Active Hunt State (Revealed after spin completes) -->
-            <div id="targetActiveState" class="hidden w-full">
-              <p id="targetPrefix" class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5">
-                FIND:
-              </p>
-              <p id="targetItemName" class="text-xl sm:text-2xl font-black text-slate-950 leading-snug break-words">
-                <!-- Item text inserted dynamically -->
-              </p>
-              <div id="targetTag" class="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-bold">
-                <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                <span id="targetCategory">Item #1</span>
-              </div>
-            </div>
           </div>
         </div>
-      </div>
 
-      <!-- PRIMARY ACTIONS -->
-      <div class="w-full space-y-2.5">
-        <!-- Main Spin / State Button -->
-        <button id="primaryActionBtn" class="w-full py-4 px-6 rounded-xl font-black text-sm sm:text-base tracking-widest uppercase transition-all transform active:scale-95 shadow-lg flex items-center justify-center space-x-2 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 hover:from-amber-400 hover:to-amber-300 shadow-amber-500/25 cursor-pointer">
-          <span id="primaryBtnIcon">🎲</span>
-          <span id="primaryBtnText">SPIN WHEEL TO START</span>
-        </button>
+        <!-- Dashed Challenge Content Box -->
+        <div id="challengeBox" class="border-2 border-dashed border-slate-300 rounded-xl p-5 sm:p-6 bg-slate-50/70 text-center min-h-[170px] flex flex-col items-center justify-center transition-all">
+          <div id="challengeIcon" class="text-3xl mb-2">🎲</div>
+          <div id="challengeSubtitle" class="text-xs uppercase font-extrabold tracking-wider text-slate-400 mb-1">
+            STATUS: STANDBY
+          </div>
+          <h2 id="challengeTitle" class="text-xl sm:text-2xl font-black text-slate-800 leading-snug">
+            Spin the wheel above to reveal your hunt challenge!
+          </h2>
+          <div id="itemTag" class="hidden mt-3 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold">
+            Target Challenge
+          </div>
+        </div>
 
-        <!-- Found button (shows during active timer) -->
-        <button id="foundItemBtn" class="hidden w-full py-3.5 px-6 rounded-xl font-extrabold text-sm tracking-wider uppercase transition-all bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/40 border border-emerald-400 active:scale-95 flex items-center justify-center gap-2">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-          </svg>
-          <span>I FOUND THIS ITEM!</span>
-        </button>
+        <!-- Action Button: Spin / Claim -->
+        <div class="mt-6 flex flex-col gap-3">
+          <button id="mainActionBtn" class="w-full py-4 px-6 rounded-xl font-extrabold text-base sm:text-lg bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/30 hover:brightness-105 active:scale-[0.98] transition flex items-center justify-center gap-2">
+            <span>🎲</span>
+            <span id="btnText">SPIN WHEEL TO START</span>
+          </button>
 
-        <!-- Reset Button -->
-        <div class="flex items-center justify-center pt-1">
-          <button id="resetGameBtn" class="text-slate-400 hover:text-slate-200 text-xs font-bold tracking-widest uppercase flex items-center space-x-1.5 py-1 px-3 rounded-lg hover:bg-slate-800/50 transition">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
-            </svg>
-            <span>RESET GAME</span>
+          <button id="resetGameBtn" class="py-2 text-xs font-bold tracking-widest uppercase text-slate-400 hover:text-slate-600 transition flex items-center justify-center gap-1.5">
+            <span>↺</span> RESET GAME
           </button>
         </div>
       </div>
 
-      <!-- BOTTOM PROGRESS PILL (Diamond element removed completely) -->
-      <div class="flex items-center justify-center pt-1">
-        <div class="bg-[#121a2b] border border-slate-800 rounded-full px-6 py-2.5 flex items-center justify-between w-72 shadow-xl shadow-black/60">
-          <!-- Trophy & Progress -->
-          <div class="flex items-center space-x-2 text-slate-300">
-            <span class="text-lg">🏆</span>
-            <span class="text-xs font-bold tracking-wider text-slate-400">FOUND</span>
-            <span id="foundCountText" class="text-xs font-black text-amber-400">0 / 10</span>
-          </div>
-
-          <!-- Divider -->
-          <div class="h-4 w-[1px] bg-slate-700/60"></div>
-
-          <!-- Make In BVB Club Tag -->
-          <div class="flex items-center space-x-1.5 text-slate-200">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-            <span class="text-[11px] font-black tracking-widest text-amber-400/90 uppercase">MIB CLUB</span>
-          </div>
+      <!-- Bottom Progress Bar -->
+      <div class="mt-6 w-full flex items-center justify-between px-6 py-3 rounded-full bg-slate-900/90 border border-slate-800 shadow-xl text-xs font-bold tracking-wider">
+        <div class="flex items-center gap-2 text-amber-400">
+          <span>🏆</span>
+          <span class="text-slate-400">FOUND:</span>
+          <span id="foundProgress" class="text-white font-extrabold text-sm">0 / 10</span>
+        </div>
+        <div class="flex items-center gap-2 text-amber-300">
+          <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+          <span>MAKE IN BVB</span>
         </div>
       </div>
-
-    </div>
-
+    </section>
   </main>
 
-  <!-- FOOTER SPONSOR & MOTTO BAR -->
-  <footer class="w-full py-2 border-t border-slate-900 bg-slate-950/40 text-center text-[11px] font-semibold text-slate-500">
-    Make In BVB • KLE Technological University, Hubballi • Inspiring Minds To Innovate
-  </footer>
-
-  <!-- TASKS & SETTINGS MODAL / DRAWER -->
-  <div id="tasksModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 transition-opacity">
-    <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
-      
-      <!-- Modal Header -->
-      <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
-        <div class="flex items-center space-x-2">
-          <span class="text-xl">📋</span>
-          <h3 class="text-sm sm:text-base font-bold text-amber-300">Make In BVB Scavenger List</h3>
-        </div>
-        <button id="closeTasksBtn" class="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center">
-          ✕
-        </button>
+  <!-- Tasks Checklist Modal -->
+  <div id="tasksModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 max-w-md w-full rounded-2xl p-6 text-white shadow-2xl max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="font-extrabold text-lg text-amber-400 flex items-center gap-2">
+          <span>📋</span> Hunt Checklist (10 Items)
+        </h3>
+        <button id="closeTasksBtn" class="w-8 h-8 rounded-full bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center">✕</button>
       </div>
-
-      <!-- Settings: Timer Duration -->
-      <div class="px-4 py-3 bg-slate-800/40 border-b border-slate-800 flex items-center justify-between text-xs">
-        <span class="text-slate-300 font-semibold">Hunt Countdown:</span>
-        <div class="flex gap-2">
-          <button class="timer-opt px-2.5 py-1 rounded bg-slate-700 hover:bg-amber-500 hover:text-black font-bold text-slate-200 transition" data-time="30">30s</button>
-          <button class="timer-opt px-2.5 py-1 rounded bg-amber-500 text-black font-bold transition" data-time="45">45s (Default)</button>
-          <button class="timer-opt px-2.5 py-1 rounded bg-slate-700 hover:bg-amber-500 hover:text-black font-bold text-slate-200 transition" data-time="60">60s</button>
-        </div>
-      </div>
-
-      <!-- Item Checklist -->
-      <div id="checklistContainer" class="p-4 space-y-2.5 overflow-y-auto flex-1 text-sm">
-        <!-- Rendered via JS -->
-      </div>
-
-      <!-- Modal Footer -->
-      <div class="p-4 border-t border-slate-800 bg-slate-950/80 flex gap-2">
-        <button id="modalSpinCloseBtn" class="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black tracking-wider uppercase text-xs">
-          Return to Game
-        </button>
+      <div id="tasksList" class="divide-y divide-slate-800 overflow-y-auto my-3 flex-1 pr-1 text-sm"></div>
+      <div class="pt-3 border-t border-slate-800 flex justify-end">
+        <button id="doneTasksBtn" class="px-5 py-2 rounded-xl bg-amber-500 font-bold text-slate-950 text-xs">CLOSE</button>
       </div>
     </div>
   </div>
 
-  <!-- VICTORY CELEBRATION MODAL (All 10 items found) -->
-  <div id="victoryModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
-    <div class="w-full max-w-sm bg-gradient-to-b from-slate-900 to-slate-950 border-2 border-amber-500 rounded-3xl p-6 text-center shadow-2xl relative">
-      <div class="w-20 h-20 mx-auto -mt-12 rounded-full bg-amber-400 border-4 border-slate-950 flex items-center justify-center text-4xl shadow-xl">
-        👑
-      </div>
-      <h2 class="carnival-title text-2xl font-black mt-3">HUNT COMPLETED!</h2>
-      <p class="text-slate-300 text-xs mt-1">Outstanding! You found all 10 items for Make In BVB!</p>
-      
-      <div class="my-4 py-3 px-4 bg-slate-800/70 rounded-xl border border-amber-500/30">
-        <div class="text-xs text-amber-300 font-bold uppercase tracking-wider">Mission Accomplished</div>
-        <div class="text-2xl font-black text-white mt-1">10 / 10 FOUND</div>
-      </div>
-
-      <button id="playAgainBtn" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black tracking-wider uppercase text-sm shadow-lg active:scale-95">
-        Play Again (New Game)
-      </button>
-    </div>
-  </div>
-
-  <!-- APPLICATION LOGIC & AUDIO ENGINE -->
   <script>
-    /* -------------------------------------------------------------
-       AUDIO ENGINE (Web Audio API Synthesizer - Zero External Assets)
-       ------------------------------------------------------------- */
-    class SoundEngine {
-      constructor() {
-        this.ctx = null;
-        this.enabled = true;
-      }
-
-      init() {
-        if (!this.ctx) {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (AudioContext) {
-            this.ctx = new AudioContext();
-          }
-        }
-        if (this.ctx && this.ctx.state === 'suspended') {
-          this.ctx.resume();
-        }
-      }
-
-      playClick() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-
-        try {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(600, this.ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(150, this.ctx.currentTime + 0.04);
-
-          gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + 0.04);
-        } catch (e) {
-          console.warn(e);
-        }
-      }
-
-      playWin() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-
-        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
-        notes.forEach((freq, i) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.value = freq;
-          const startTime = this.ctx.currentTime + i * 0.09;
-          gain.gain.setValueAtTime(0.25, startTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(startTime);
-          osc.stop(startTime + 0.35);
-        });
-      }
-
-      playTick(isUrgent = false) {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-
-        try {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = isUrgent ? 'sawtooth' : 'sine';
-          osc.frequency.setValueAtTime(isUrgent ? 880 : 440, this.ctx.currentTime);
-          gain.gain.setValueAtTime(isUrgent ? 0.3 : 0.15, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.06);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + 0.06);
-        } catch (e) {
-          console.warn(e);
-        }
-      }
-
-      playBuzzer() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-
-        try {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(160, this.ctx.currentTime);
-          osc.frequency.linearRampToValueAtTime(90, this.ctx.currentTime + 0.4);
-          gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.4);
-
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start();
-          osc.stop(this.ctx.currentTime + 0.4);
-        } catch (e) {
-          console.warn(e);
-        }
-      }
-    }
-
-    const sound = new SoundEngine();
-
-    /* -------------------------------------------------------------
-       HUNT ITEMS DATA (Make In BVB 10 Custom Challenges)
-       ------------------------------------------------------------- */
+    // 10 Exact Challenge Items
     const HUNT_ITEMS = [
-      {
-        id: 1,
-        title: "Bring 3 diff wires of charging like c, normal, phone",
-        shortLabel: "1\nMIB",
-        color: "#dc2626", // Red
-        completed: false
-      },
-      {
-        id: 2,
-        title: "Bring 5 different shapes of leaves",
-        shortLabel: "2\nMagic",
-        color: "#1d4ed8", // Blue
-        completed: false
-      },
-      {
-        id: 3,
-        title: "Collect and bring breadboard and wires",
-        shortLabel: "3\nSecret",
-        color: "#eab308", // Yellow
-        completed: false
-      },
-      {
-        id: 4,
-        title: "Find a pair of adidas shoe",
-        shortLabel: "4\nMIB",
-        color: "#15803d", // Green
-        completed: false
-      },
-      {
-        id: 5,
-        title: "Find 3 diff shape obj of 3 diff colours",
-        shortLabel: "5\nHidden",
-        color: "#f97316", // Orange
-        completed: false
-      },
-      {
-        id: 6,
-        title: "Collect and bring cards",
-        shortLabel: "6\nMagic",
-        color: "#7e22ce", // Purple
-        completed: false
-      },
-      {
-        id: 7,
-        title: "Collect and bring pendrive min 2",
-        shortLabel: "7\nMystery",
-        color: "#ec4899", // Pink
-        completed: false
-      },
-      {
-        id: 8,
-        title: "Find 3 different coins — each with a different year or value",
-        shortLabel: "8\nMIB",
-        color: "#06b6d4", // Cyan
-        completed: false
-      },
-      {
-        id: 9,
-        title: "Find something circular but not coin",
-        shortLabel: "9\nWin",
-        color: "#ea580c", // Deep orange
-        completed: false
-      },
-      {
-        id: 10,
-        title: "Find 3 diff stationary items -- highlighter, paper clip, sticky notes",
-        shortLabel: "10\nLucky",
-        color: "#059669", // Emerald
-        completed: false
-      }
+      { id: 1, title: "Bring 3 diff wires of charging like c, normal, phone", color: "#e62238", label: "MIB 1" },
+      { id: 2, title: "Bring 5 different shapes of leaves", color: "#1447e6", label: "Magic 2" },
+      { id: 3, title: "Collect and bring breadboard and wires", color: "#eab308", label: "Secret 3" },
+      { id: 4, title: "Find a pair of adidas shoe", color: "#16a34a", label: "MIB 4" },
+      { id: 5, title: "Find 3 diff shape obj of 3 diff colours", color: "#f97316", label: "Hidden 5" },
+      { id: 6, title: "Collect and bring cards", color: "#8b5cf6", label: "Magic 6" },
+      { id: 7, title: "Collect and bring pendrive min 2", color: "#ec4899", label: "Mystery 7" },
+      { id: 8, title: "Find 3 different coins — each with a different year or value", color: "#06b6d4", label: "MIB 8" },
+      { id: 9, title: "Find something circular but not a coin", color: "#f43f5e", label: "Win 9" },
+      { id: 10, title: "Find 3 diff stationary items -- highlighter, paper clip, sticky notes", color: "#10b981", label: "Lucky 10" }
     ];
 
     let items = JSON.parse(JSON.stringify(HUNT_ITEMS));
-    let currentSelectedIndex = -1; // -1 means mystery idle state
     let currentAngle = 0;
     let isSpinning = false;
-    let timerDuration = 45;       // Set to 45 seconds as requested
+    let selectedItem = null;
+    let gameState = "IDLE"; // "IDLE", "SPINNING", "HUNTING", "FOUND", "COMPLETE"
+    let timerDuration = 45;
     let timerRemaining = 45;
     let timerInterval = null;
-    let isHuntActive = false;
+    let soundEnabled = true;
 
-    // DOM Elements
-    const canvas = document.getElementById('wheelCanvas');
-    const ctx = canvas.getContext('2d');
-    const countdownNumber = document.getElementById('countdownNumber');
-    const timerStatusLabel = document.getElementById('timerStatusLabel');
-    const statusDot1 = document.getElementById('statusDot1');
-    const statusDot2 = document.getElementById('statusDot2');
-    const statusDot3 = document.getElementById('statusDot3');
-    const targetCardContainer = document.getElementById('targetCardContainer');
-    const targetHeader = document.getElementById('targetHeader');
-    const targetIdleState = document.getElementById('targetIdleState');
-    const targetActiveState = document.getElementById('targetActiveState');
-    const targetItemName = document.getElementById('targetItemName');
-    const targetCategory = document.getElementById('targetCategory');
-    const primaryActionBtn = document.getElementById('primaryActionBtn');
-    const primaryBtnText = document.getElementById('primaryBtnText');
-    const primaryBtnIcon = document.getElementById('primaryBtnIcon');
-    const foundItemBtn = document.getElementById('foundItemBtn');
-    const resetGameBtn = document.getElementById('resetGameBtn');
-    const foundCountText = document.getElementById('foundCountText');
-    const spinCenterBtn = document.getElementById('spinCenterBtn');
-    const centerDiamondBtn = document.getElementById('centerDiamondBtn');
-    const soundToggleBtn = document.getElementById('soundToggleBtn');
-    const soundOnIcon = document.getElementById('soundOnIcon');
-    const soundOffIcon = document.getElementById('soundOffIcon');
-    const openTasksBtn = document.getElementById('openTasksBtn');
-    const closeTasksBtn = document.getElementById('closeTasksBtn');
-    const tasksModal = document.getElementById('tasksModal');
-    const modalSpinCloseBtn = document.getElementById('modalSpinCloseBtn');
-    const checklistContainer = document.getElementById('checklistContainer');
-    const victoryModal = document.getElementById('victoryModal');
-    const playAgainBtn = document.getElementById('playAgainBtn');
-
-    /* -------------------------------------------------------------
-       SETUP MARQUEE BULBS
-       ------------------------------------------------------------- */
-    function setupMarqueeBulbs() {
-      const container = document.getElementById('lightsContainer');
-      container.innerHTML = '';
-      const totalBulbs = 16;
-      const radiusPercent = 48.6;
-
-      for (let i = 0; i < totalBulbs; i++) {
-        const angle = (i * (360 / totalBulbs) - 90) * (Math.PI / 180);
-        const x = 50 + radiusPercent * Math.cos(angle);
-        const y = 50 + radiusPercent * Math.sin(angle);
-
-        const bulb = document.createElement('div');
-        bulb.className = 'light-bulb absolute w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[#ffea79] border-2 border-[#a16207] shadow-lg transform -translate-x-1/2 -translate-y-1/2';
-        bulb.style.left = `${x}%`;
-        bulb.style.top = `${y}%`;
-        container.appendChild(bulb);
+    // Web Audio Synthesizer
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
     }
 
-    /* -------------------------------------------------------------
-       DRAW WHEEL ON CANVAS
-       ------------------------------------------------------------- */
+    function playTick() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(650, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(180, ctx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.04);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.04);
+      } catch(e) {}
+    }
+
+    function playFanfare() {
+      if (!soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        [440, 554, 659, 880].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.09);
+          gain.gain.setValueAtTime(0.25, ctx.currentTime + idx * 0.09);
+          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + idx * 0.09 + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.09);
+          osc.stop(ctx.currentTime + idx * 0.09 + 0.35);
+        });
+      } catch(e) {}
+    }
+
+    // Canvas Wheel Drawing
+    const canvas = document.getElementById("wheelCanvas");
+    const ctx = canvas.getContext("2d");
+
     function drawWheel() {
-      const width = canvas.width;
-      const height = canvas.height;
-      const centerX = width / 2;
-      const centerY = height / 2;
-      const radius = width / 2;
+      const centerX = 400;
+      const centerY = 400;
+      const radius = 370;
       const numSlices = items.length;
-      const sliceAngle = (2 * Math.PI) / numSlices;
+      const arc = (2 * Math.PI) / numSlices;
 
-      ctx.clearRect(0, 0, width, height);
+      ctx.clearRect(0, 0, 800, 800);
 
-      ctx.save();
-      ctx.translate(centerX, centerY);
-      ctx.rotate(currentAngle);
-
-      for (let i = 0; i < numSlices; i++) {
-        const item = items[i];
-        const start = i * sliceAngle;
-        const end = start + sliceAngle;
-
+      items.forEach((item, i) => {
+        const angle = currentAngle + i * arc;
+        
+        ctx.save();
         ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.arc(0, 0, radius, start, end);
+        ctx.moveTo(centerX, centerY);
+        ctx.arc(centerX, centerY, radius, angle, angle + arc);
         ctx.closePath();
 
-        // Wedge color: completed slices turn dark slate with checkmark
         if (item.completed) {
-          ctx.fillStyle = '#334155';
+          ctx.fillStyle = "#334155";
         } else {
           ctx.fillStyle = item.color;
         }
         ctx.fill();
 
-        // Slice borders
-        ctx.strokeStyle = '#1e293b';
-        ctx.lineWidth = 6;
+        // Edge separator line
+        ctx.strokeStyle = "#caa048";
+        ctx.lineWidth = 4;
         ctx.stroke();
 
-        // Subtle inner glow
+        // Draw Slice Labels & Text
         ctx.save();
-        ctx.clip();
-        ctx.beginPath();
-        ctx.arc(0, 0, radius - 6, start, end);
-        ctx.strokeStyle = 'rgba(255,255,255,0.22)';
-        ctx.lineWidth = 10;
-        ctx.stroke();
-        ctx.restore();
-
-        // Draw Wedge Labels
-        ctx.save();
-        const midAngle = start + sliceAngle / 2;
-        ctx.rotate(midAngle);
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'middle';
+        ctx.translate(centerX, centerY);
+        ctx.rotate(angle + arc / 2);
+        ctx.textAlign = "right";
+        ctx.textBaseline = "middle";
 
         if (item.completed) {
-          ctx.font = 'bold 58px Inter, sans-serif';
-          ctx.fillStyle = '#94a3b8';
-          ctx.fillText('✓', radius * 0.68, 0);
+          ctx.fillStyle = "#94a3b8";
+          ctx.font = "bold 42px Plus Jakarta Sans, sans-serif";
+          ctx.fillText("✓", radius - 60, 0);
         } else {
-          const lines = item.shortLabel.split('\n');
-          ctx.fillStyle = '#ffffff';
-          ctx.font = '900 38px Inter, sans-serif';
-          ctx.shadowColor = 'rgba(0,0,0,0.7)';
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "900 24px Plus Jakarta Sans, sans-serif";
+          ctx.shadowColor = "rgba(0, 0, 0, 0.75)";
           ctx.shadowBlur = 6;
-
-          if (lines.length === 2) {
-            ctx.fillText(lines[1], radius * 0.77, -18);
-            ctx.font = 'bold 30px Inter, sans-serif';
-            ctx.fillText(lines[0], radius * 0.77, 24);
-          } else {
-            ctx.fillText(item.shortLabel, radius * 0.77, 0);
-          }
+          ctx.fillText(item.label, radius - 45, 0);
         }
-        ctx.restore();
-      }
 
-      ctx.restore();
+        ctx.restore();
+        ctx.restore();
+      });
+
+      // Outer inner-ring stroke
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+      ctx.strokeStyle = "#eab308";
+      ctx.lineWidth = 8;
+      ctx.stroke();
     }
 
-    /* -------------------------------------------------------------
-       WHEEL SPINNING LOGIC (Physical Deceleration)
-       ------------------------------------------------------------- */
-    function spinToSlice(targetIndex) {
+    // Build Marquee Bulbs around rim
+    function createMarqueeBulbs() {
+      const bulbsContainer = document.getElementById("bulbsContainer");
+      bulbsContainer.innerHTML = "";
+      const totalBulbs = 16;
+      for (let i = 0; i < totalBulbs; i++) {
+        const angle = (i / totalBulbs) * (2 * Math.PI);
+        const bulb = document.createElement("div");
+        bulb.className = "marquee-bulb";
+        const x = 50 + 49 * Math.cos(angle);
+        const y = 50 + 49 * Math.sin(angle);
+        bulb.style.left = `${x}%`;
+        bulb.style.top = `${y}%`;
+        bulbsContainer.appendChild(bulb);
+      }
+    }
+
+    // Wheel Spin Physics
+    function spinWheel() {
       if (isSpinning) return;
+      const uncompleted = items.filter(it => !it.completed);
+      if (uncompleted.length === 0) {
+        alert("Awesome! All 10 challenges are already completed!");
+        return;
+      }
+
       isSpinning = true;
-      stopTimer();
-      sound.init();
+      gameState = "SPINNING";
+      clearInterval(timerInterval);
 
-      const numSlices = items.length;
-      const sliceAngle = (2 * Math.PI) / numSlices;
-      const targetSliceCenter = targetIndex * sliceAngle + sliceAngle / 2;
+      // Update Card to Spinning Mode
+      document.getElementById("cardStatusBadge").innerText = "SPINNING...";
+      document.getElementById("cardStatusBadge").className = "text-xs font-black uppercase tracking-widest text-amber-500 animate-pulse";
+      document.getElementById("challengeIcon").innerText = "⚙️";
+      document.getElementById("challengeSubtitle").innerText = "CHOOSING TARGET...";
+      document.getElementById("challengeTitle").innerText = "Hold tight, selecting your next material hunt challenge...";
+      document.getElementById("itemTag").classList.add("hidden");
+      document.getElementById("mainActionBtn").disabled = true;
+      document.getElementById("mainActionBtn").classList.add("opacity-60", "cursor-not-allowed");
 
-      const topAngle = 1.5 * Math.PI;
-      const normalizedCurrent = currentAngle % (2 * Math.PI);
-      let angleDiff = (topAngle - targetSliceCenter - normalizedCurrent) % (2 * Math.PI);
-      if (angleDiff < 0) angleDiff += 2 * Math.PI;
+      // Random target calculation
+      const targetItem = uncompleted[Math.floor(Math.random() * uncompleted.length)];
+      const targetIndex = items.findIndex(it => it.id === targetItem.id);
+      const arc = (2 * Math.PI) / items.length;
 
-      const fullRotations = (4 + Math.floor(Math.random() * 3)) * (2 * Math.PI);
-      const totalSpin = fullRotations + angleDiff;
+      // Top indicator sits at -PI/2 (270 degrees)
+      const targetAngleCenter = -(targetIndex * arc + arc / 2) - Math.PI / 2;
+      const spins = 5 + Math.floor(Math.random() * 3); // 5 to 7 full rotations
+      const targetTotalAngle = currentAngle + (spins * 2 * Math.PI) + ((targetAngleCenter - (currentAngle % (2 * Math.PI)) + 4 * Math.PI) % (2 * Math.PI));
 
-      const duration = 4000;
-      const startTime = performance.now();
       const startAngle = currentAngle;
-      let lastSlicePassed = -1;
+      const deltaAngle = targetTotalAngle - startAngle;
+      const duration = 4200; // 4.2 seconds
+      const startTime = performance.now();
+      let lastTickAngle = currentAngle;
 
-      // Update Target Card to Spinning State
-      targetHeader.textContent = "CHOOSING CHALLENGE...";
-      targetHeader.className = "text-center text-xs sm:text-sm font-extrabold text-amber-500 tracking-wider uppercase mb-3 animate-pulse";
-      targetCardContainer.className = "relative bg-white rounded-2xl p-5 sm:p-6 target-card-shadow border-t-4 border-amber-400";
-      targetIdleState.classList.remove('hidden');
-      targetActiveState.classList.add('hidden');
-      targetIdleState.innerHTML = `
-        <div class="text-3xl animate-spin" style="animation-duration: 1s;">🌀</div>
-        <p class="text-base font-extrabold text-amber-600">Spinning Wheel...</p>
-        <p class="text-xs text-slate-500 font-medium">Selecting your random Make In BVB task!</p>
-      `;
-
-      // Update Monitor to Spinning State
-      timerStatusLabel.textContent = "SPINNING";
-      countdownNumber.textContent = "--";
-      countdownNumber.classList.add('opacity-60');
-      statusDot1.className = "w-2 h-2 rounded-full bg-amber-400 animate-ping";
-      statusDot2.className = "w-2 h-2 rounded-full bg-slate-700";
-      statusDot3.className = "w-2 h-2 rounded-full bg-slate-700";
-
-      // Update Button State
-      primaryActionBtn.className = "w-full py-4 px-6 rounded-xl font-black text-sm sm:text-base tracking-widest uppercase transition-all shadow-lg flex items-center justify-center space-x-2 bg-slate-800 text-slate-400 cursor-not-allowed";
-      primaryBtnIcon.textContent = "🌀";
-      primaryBtnText.textContent = "SPINNING...";
-      foundItemBtn.classList.add('hidden');
-
-      function animate(time) {
-        const elapsed = time - startTime;
+      function animateSpin(currentTime) {
+        const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const easeOut = 1 - Math.pow(1 - progress, 4);
-
-        currentAngle = startAngle + totalSpin * easeOut;
+        
+        // Cubic ease out
+        const ease = 1 - Math.pow(1 - progress, 3);
+        currentAngle = startAngle + deltaAngle * ease;
         drawWheel();
 
-        // Audio ticker trigger on crossing boundaries
-        const normalizedAngle = (currentAngle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-        const currentSliceUnderNeedle = Math.floor(
-          ((topAngle - normalizedAngle + 2 * Math.PI) % (2 * Math.PI)) / sliceAngle
-        );
-
-        if (currentSliceUnderNeedle !== lastSlicePassed) {
-          sound.playClick();
-          lastSlicePassed = currentSliceUnderNeedle;
+        // Tick on crossing segments
+        if (Math.abs(currentAngle - lastTickAngle) > arc) {
+          playTick();
+          lastTickAngle = currentAngle;
         }
 
         if (progress < 1) {
-          requestAnimationFrame(animate);
+          requestAnimationFrame(animateSpin);
         } else {
           isSpinning = false;
-          currentSelectedIndex = targetIndex;
-          onSpinComplete(targetIndex);
+          selectedItem = targetItem;
+          onSpinComplete();
         }
       }
 
-      requestAnimationFrame(animate);
+      requestAnimationFrame(animateSpin);
     }
 
-    /* Choose a random uncompleted item */
-    function triggerRandomSpin() {
-      if (isSpinning) return;
-      const uncompletedIndices = items
-        .map((it, idx) => (!it.completed ? idx : null))
-        .filter(idx => idx !== null);
+    function onSpinComplete() {
+      gameState = "HUNTING";
+      playFanfare();
 
-      let targetIdx;
-      if (uncompletedIndices.length > 0) {
-        const rand = Math.floor(Math.random() * uncompletedIndices.length);
-        targetIdx = uncompletedIndices[rand];
-      } else {
-        targetIdx = Math.floor(Math.random() * items.length);
-      }
-
-      spinToSlice(targetIdx);
-    }
-
-    /* -------------------------------------------------------------
-       HUNT & TIMER LOGIC (45 SECONDS DEFAULT)
-       ------------------------------------------------------------- */
-    function onSpinComplete(index) {
-      const selected = items[index];
-
-      // Update Target Item Card
-      targetHeader.textContent = "TARGET ITEM";
-      targetHeader.className = "text-center text-xs sm:text-sm font-extrabold text-red-600 tracking-wider uppercase mb-3";
-      targetCardContainer.className = "relative bg-white rounded-2xl p-5 sm:p-6 target-card-shadow border-t-4 border-red-500";
+      // Update Target Card
+      document.getElementById("cardStatusBadge").innerText = "TARGET ACQUIRED";
+      document.getElementById("cardStatusBadge").className = "text-xs font-black uppercase tracking-widest text-red-600";
+      document.getElementById("challengeIcon").innerText = "🎯";
+      document.getElementById("challengeSubtitle").innerText = `FIND: ${selectedItem.label}`;
+      document.getElementById("challengeTitle").innerText = selectedItem.title;
       
-      targetIdleState.classList.add('hidden');
-      targetActiveState.classList.remove('hidden');
-      targetItemName.textContent = selected.title;
-      targetCategory.textContent = `Item #${selected.id}`;
+      const itemTag = document.getElementById("itemTag");
+      itemTag.innerText = `Challenge #${selectedItem.id}`;
+      itemTag.classList.remove("hidden");
 
-      // Card pop animation
-      const card = document.getElementById('targetCardWrapper');
-      card.classList.remove('fade-enter');
-      void card.offsetWidth;
-      card.classList.add('fade-enter');
+      // Enable Action Button to "I FOUND IT!"
+      const btn = document.getElementById("mainActionBtn");
+      btn.disabled = false;
+      btn.classList.remove("opacity-60", "cursor-not-allowed");
+      btn.className = "w-full py-4 px-6 rounded-xl font-extrabold text-base sm:text-lg bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-green-500/30 hover:brightness-105 active:scale-[0.98] transition flex items-center justify-center gap-2";
+      document.getElementById("btnText").innerText = "I FOUND THIS ITEM!";
 
-      sound.playWin();
-      startTimer();
+      // Start 45s Countdown
+      startCountdown();
     }
 
-    function startTimer() {
-      stopTimer();
+    function startCountdown() {
+      clearInterval(timerInterval);
       timerRemaining = timerDuration;
-      isHuntActive = true;
-      countdownNumber.classList.remove('opacity-60');
-      timerStatusLabel.textContent = "TIME LEFT";
-      updateTimerUI();
-
-      // Primary Button State
-      primaryActionBtn.className = "w-full py-4 px-6 rounded-xl font-black text-sm sm:text-base tracking-widest uppercase transition-all shadow-lg flex items-center justify-center space-x-2 bg-gradient-to-r from-slate-800 to-slate-900 border border-slate-700 text-slate-200";
-      primaryBtnIcon.textContent = "🎯";
-      primaryBtnText.textContent = "TIME REMAINING: FIND IT!";
-
-      // Show Found Button
-      foundItemBtn.classList.remove('hidden');
+      updateTimerDisplay();
 
       timerInterval = setInterval(() => {
         timerRemaining--;
-        updateTimerUI();
-
-        if (timerRemaining <= 5 && timerRemaining > 0) {
-          sound.playTick(true);
-        } else if (timerRemaining > 0 && timerRemaining % 5 === 0) {
-          sound.playTick(false);
-        }
-
         if (timerRemaining <= 0) {
+          clearInterval(timerInterval);
+          timerRemaining = 0;
+          updateTimerDisplay();
           onTimeExpired();
+        } else {
+          updateTimerDisplay();
+          if (timerRemaining <= 5) playTick();
         }
       }, 1000);
     }
 
-    function stopTimer() {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
-      }
-      isHuntActive = false;
-    }
-
-    function updateTimerUI() {
-      countdownNumber.textContent = timerRemaining;
-
-      // Status indicator dots
-      if (timerRemaining > 20) {
-        statusDot1.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]";
-        statusDot2.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]";
-        statusDot3.className = "w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_6px_#10b981]";
-      } else if (timerRemaining > 10) {
-        statusDot1.className = "w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_6px_#f59e0b]";
-        statusDot2.className = "w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_6px_#f59e0b]";
-        statusDot3.className = "w-2 h-2 rounded-full bg-slate-700";
+    function updateTimerDisplay() {
+      const display = document.getElementById("timerDisplay");
+      display.innerHTML = `${timerRemaining}<span class="text-xl">s</span>`;
+      if (timerRemaining <= 10) {
+        display.className = "led-text text-3xl sm:text-4xl font-extrabold text-red-500 animate-pulse";
       } else {
-        statusDot1.className = "w-2 h-2 rounded-full bg-red-500 shadow-[0_0_6px_#ef4444]";
-        statusDot2.className = "w-2 h-2 rounded-full bg-slate-700";
-        statusDot3.className = "w-2 h-2 rounded-full bg-slate-700";
+        display.className = "led-text text-3xl sm:text-4xl font-extrabold text-red-500";
       }
     }
 
     function onTimeExpired() {
-      stopTimer();
-      sound.playBuzzer();
-
-      primaryActionBtn.className = "w-full py-4 px-6 rounded-xl font-black text-sm sm:text-base tracking-widest uppercase transition-all shadow-lg flex items-center justify-center space-x-2 bg-red-600 hover:bg-red-500 text-white cursor-pointer active:scale-95";
-      primaryBtnIcon.textContent = "⌛";
-      primaryBtnText.textContent = "TIME UP! SPIN TO RETRY";
-      foundItemBtn.classList.add('hidden');
+      playTick();
+      document.getElementById("cardStatusBadge").innerText = "TIME EXPIRED!";
+      document.getElementById("cardStatusBadge").className = "text-xs font-black uppercase tracking-widest text-slate-500";
+      const btn = document.getElementById("mainActionBtn");
+      btn.className = "w-full py-4 px-6 rounded-xl font-extrabold text-base sm:text-lg bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/30 hover:brightness-105 active:scale-[0.98] transition flex items-center justify-center gap-2";
+      document.getElementById("btnText").innerText = "SPIN AGAIN";
     }
 
-    /* Mark item as completed */
-    function markCurrentItemFound() {
-      if (!isHuntActive && timerRemaining <= 0) return;
-      if (currentSelectedIndex < 0) return;
-      stopTimer();
+    function claimFoundItem() {
+      if (!selectedItem) return;
+      clearInterval(timerInterval);
 
-      const currentItem = items[currentSelectedIndex];
-      if (!currentItem.completed) {
-        currentItem.completed = true;
-        updateScoreAndProgress();
-        drawWheel();
-      }
+      // Mark Item as Completed
+      const itemRef = items.find(it => it.id === selectedItem.id);
+      if (itemRef) itemRef.completed = true;
 
-      sound.playWin();
-      triggerConfetti();
+      drawWheel();
+      updateProgress();
 
-      primaryActionBtn.className = "w-full py-4 px-6 rounded-xl font-black text-sm sm:text-base tracking-widest uppercase transition-all shadow-lg flex items-center justify-center space-x-2 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 cursor-pointer active:scale-95 shadow-amber-500/30";
-      primaryBtnIcon.textContent = "✨";
-      primaryBtnText.textContent = "FOUND! SPIN NEXT ITEM";
-      foundItemBtn.classList.add('hidden');
-
-      // Check for full victory
-      const allDone = items.every(it => it.completed);
-      if (allDone) {
-        setTimeout(() => {
-          victoryModal.classList.remove('hidden');
-          victoryModal.classList.add('flex');
-          triggerGrandConfetti();
-        }, 600);
-      }
-    }
-
-    function updateScoreAndProgress() {
-      const foundCount = items.filter(it => it.completed).length;
-      foundCountText.textContent = `${foundCount} / ${items.length}`;
-      renderChecklist();
-    }
-
-    /* -------------------------------------------------------------
-       CONFETTI CELEBRATIONS
-       ------------------------------------------------------------- */
-    function triggerConfetti() {
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 50,
-          spread: 60,
-          origin: { y: 0.65 },
-          colors: ['#facc15', '#ef4444', '#3b82f6', '#10b981', '#ec4899']
-        });
-      }
-    }
-
-    function triggerGrandConfetti() {
-      if (typeof confetti !== 'function') return;
-      const end = Date.now() + 2.5 * 1000;
-      const colors = ['#f59e0b', '#ef4444', '#06b6d4', '#10b981', '#a855f7'];
-
-      (function frame() {
-        confetti({
-          particleCount: 4,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
-          colors: colors
-        });
-        confetti({
-          particleCount: 4,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-          colors: colors
-        });
-
-        if (Date.now() < end) {
-          requestAnimationFrame(frame);
-        }
-      })();
-    }
-
-    /* -------------------------------------------------------------
-       CHECKLIST MODAL
-       ------------------------------------------------------------- */
-    function renderChecklist() {
-      checklistContainer.innerHTML = '';
-      items.forEach((item) => {
-        const itemRow = document.createElement('div');
-        itemRow.className = `p-3 rounded-xl border flex items-center justify-between transition ${
-          item.completed
-            ? 'bg-emerald-950/40 border-emerald-800/80 text-emerald-200'
-            : 'bg-slate-800/60 border-slate-700/60 text-slate-200'
-        }`;
-
-        itemRow.innerHTML = `
-          <div class="flex items-start space-x-3 pr-2">
-            <span class="w-6 h-6 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-black ${
-              item.completed ? 'bg-emerald-500 text-slate-950' : 'bg-slate-700 text-slate-300'
-            }">
-              ${item.completed ? '✓' : item.id}
-            </span>
-            <div>
-              <div class="text-xs font-bold leading-snug ${item.completed ? 'line-through text-slate-400' : 'text-slate-100'}">
-                ${item.title}
-              </div>
-              <div class="text-[10px] text-slate-400 mt-0.5">${item.completed ? 'Found' : 'Pending find'}</div>
-            </div>
-          </div>
-          <button class="toggle-single-btn px-2.5 py-1 text-[11px] font-bold rounded-lg ${
-            item.completed ? 'bg-slate-700 text-slate-300 hover:bg-slate-600' : 'bg-amber-500 text-slate-950 hover:bg-amber-400'
-          }">
-            ${item.completed ? 'Undo' : 'Mark'}
-          </button>
-        `;
-
-        itemRow.querySelector('.toggle-single-btn').addEventListener('click', (e) => {
-          e.stopPropagation();
-          item.completed = !item.completed;
-          updateScoreAndProgress();
-          drawWheel();
-        });
-
-        checklistContainer.appendChild(itemRow);
+      // Confetti burst
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 }
       });
+
+      // Check if all completed
+      const remaining = items.filter(it => !it.completed).length;
+      if (remaining === 0) {
+        document.getElementById("cardStatusBadge").innerText = "CONGRATULATIONS!";
+        document.getElementById("challengeTitle").innerText = "🎉 You successfully completed all 10 scavenger hunt challenges!";
+        document.getElementById("btnText").innerText = "HUNT COMPLETED!";
+        document.getElementById("mainActionBtn").disabled = true;
+      } else {
+        document.getElementById("cardStatusBadge").innerText = "TASK COMPLETED!";
+        document.getElementById("challengeIcon").innerText = "✨";
+        document.getElementById("challengeTitle").innerText = `Great job finding "${selectedItem.label}"! Ready for the next one?`;
+        
+        const btn = document.getElementById("mainActionBtn");
+        btn.className = "w-full py-4 px-6 rounded-xl font-extrabold text-base sm:text-lg bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/30 hover:brightness-105 active:scale-[0.98] transition flex items-center justify-center gap-2";
+        document.getElementById("btnText").innerText = "SPIN FOR NEXT ITEM";
+      }
+
+      selectedItem = null;
     }
 
-    /* -------------------------------------------------------------
-       RESET GAME
-       ------------------------------------------------------------- */
+    function updateProgress() {
+      const count = items.filter(it => it.completed).length;
+      document.getElementById("foundProgress").innerText = `${count} / ${items.length}`;
+    }
+
     function resetGame() {
-      stopTimer();
+      if (isSpinning) return;
+      clearInterval(timerInterval);
       items = JSON.parse(JSON.stringify(HUNT_ITEMS));
-      currentSelectedIndex = -1;
+      selectedItem = null;
+      gameState = "IDLE";
       timerRemaining = timerDuration;
 
-      // Reset CRT Monitor to Standby (Default 45s)
-      countdownNumber.textContent = timerDuration;
-      countdownNumber.classList.add('opacity-60');
-      timerStatusLabel.textContent = "STANDBY";
-      statusDot1.className = "w-2 h-2 rounded-full bg-slate-700";
-      statusDot2.className = "w-2 h-2 rounded-full bg-slate-700";
-      statusDot3.className = "w-2 h-2 rounded-full bg-slate-700";
-
-      // Reset Target Card to Mystery Idle State
-      targetHeader.textContent = "READY TO PLAY?";
-      targetHeader.className = "text-center text-xs sm:text-sm font-extrabold text-amber-600 tracking-wider uppercase mb-3";
-      targetCardContainer.className = "relative bg-white rounded-2xl p-5 sm:p-6 target-card-shadow border-t-4 border-amber-500";
-      targetIdleState.classList.remove('hidden');
-      targetActiveState.classList.add('hidden');
-      targetIdleState.innerHTML = `
-        <div class="text-3xl animate-bounce">❓</div>
-        <p class="text-base sm:text-lg font-extrabold text-slate-800">Mystery Challenge</p>
-        <p class="text-xs sm:text-sm text-slate-500 font-medium max-w-xs">Spin the wheel to reveal your next scavenger hunt object!</p>
-      `;
-
-      primaryActionBtn.className = "w-full py-4 px-6 rounded-xl font-black text-sm sm:text-base tracking-widest uppercase transition-all shadow-lg flex items-center justify-center space-x-2 bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 text-slate-950 hover:from-amber-400 hover:to-amber-300 shadow-amber-500/25 cursor-pointer active:scale-95";
-      primaryBtnIcon.textContent = "🎲";
-      primaryBtnText.textContent = "SPIN WHEEL TO START";
-      foundItemBtn.classList.add('hidden');
-
-      victoryModal.classList.add('hidden');
-      victoryModal.classList.remove('flex');
-
-      updateScoreAndProgress();
+      updateTimerDisplay();
+      updateProgress();
       drawWheel();
+
+      document.getElementById("cardStatusBadge").innerText = "READY TO PLAY?";
+      document.getElementById("cardStatusBadge").className = "text-xs font-black uppercase tracking-widest text-amber-600";
+      document.getElementById("challengeIcon").innerText = "🎲";
+      document.getElementById("challengeSubtitle").innerText = "STATUS: STANDBY";
+      document.getElementById("challengeTitle").innerText = "Spin the wheel above to reveal your hunt challenge!";
+      document.getElementById("itemTag").classList.add("hidden");
+
+      const btn = document.getElementById("mainActionBtn");
+      btn.disabled = false;
+      btn.className = "w-full py-4 px-6 rounded-xl font-extrabold text-base sm:text-lg bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/30 hover:brightness-105 active:scale-[0.98] transition flex items-center justify-center gap-2";
+      document.getElementById("btnText").innerText = "SPIN WHEEL TO START";
     }
 
-    /* -------------------------------------------------------------
-       INITIALIZATION & EVENT LISTENERS
-       ------------------------------------------------------------- */
-    function init() {
-      setupMarqueeBulbs();
+    // Modal Tasks Drawer
+    function renderTasksList() {
+      const container = document.getElementById("tasksList");
+      container.innerHTML = "";
+      items.forEach((it) => {
+        const div = document.createElement("div");
+        div.className = "py-2.5 flex items-start justify-between gap-3";
+        div.innerHTML = `
+          <div class="flex items-start gap-2.5">
+            <span class="${it.completed ? 'text-emerald-400 font-bold' : 'text-slate-500'}">
+              ${it.completed ? '✓' : '○'}
+            </span>
+            <span class="${it.completed ? 'line-through text-slate-500' : 'text-slate-200 font-medium'}">
+              ${it.id}. ${it.title}
+            </span>
+          </div>
+          <span class="text-xs px-2 py-0.5 rounded ${it.completed ? 'bg-emerald-950 text-emerald-400' : 'bg-slate-800 text-slate-400'}">
+            ${it.label}
+          </span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Event Bindings
+    document.getElementById("mainActionBtn").addEventListener("click", () => {
+      if (gameState === "HUNTING" && selectedItem) {
+        claimFoundItem();
+      } else {
+        spinWheel();
+      }
+    });
+
+    document.getElementById("centerSpinHub").addEventListener("click", spinWheel);
+    document.getElementById("wheelCanvas").addEventListener("click", () => {
+      if (!isSpinning && gameState !== "HUNTING") spinWheel();
+    });
+
+    document.getElementById("resetGameBtn").addEventListener("click", resetGame);
+
+    // Audio & Modal
+    document.getElementById("soundToggleBtn").addEventListener("click", () => {
+      soundEnabled = !soundEnabled;
+      document.getElementById("soundIcon").innerText = soundEnabled ? "🔊" : "🔇";
+    });
+
+    document.getElementById("tasksBtn").addEventListener("click", () => {
+      renderTasksList();
+      document.getElementById("tasksModal").classList.remove("hidden");
+    });
+
+    document.getElementById("closeTasksBtn").addEventListener("click", () => {
+      document.getElementById("tasksModal").classList.add("hidden");
+    });
+
+    document.getElementById("doneTasksBtn").addEventListener("click", () => {
+      document.getElementById("tasksModal").classList.add("hidden");
+    });
+
+    // Initialize
+    window.addEventListener("DOMContentLoaded", () => {
+      createMarqueeBulbs();
       resetGame();
-
-      // Spin Wheel Click Handlers
-      spinCenterBtn.addEventListener('click', triggerRandomSpin);
-
-      // Primary Action Button
-      primaryActionBtn.addEventListener('click', () => {
-        if (isSpinning) return;
-        if (!isHuntActive) {
-          triggerRandomSpin();
-        } else {
-          markCurrentItemFound();
-        }
-      });
-
-      // Found Item Action
-      foundItemBtn.addEventListener('click', markCurrentItemFound);
-
-      // Reset Button
-      resetGameBtn.addEventListener('click', resetGame);
-
-      // Sound Toggle
-      soundToggleBtn.addEventListener('click', () => {
-        sound.enabled = !sound.enabled;
-        if (sound.enabled) {
-          soundOnIcon.classList.remove('hidden');
-          soundOffIcon.classList.add('hidden');
-          sound.playClick();
-        } else {
-          soundOnIcon.classList.add('hidden');
-          soundOffIcon.classList.remove('hidden');
-        }
-      });
-
-      // Tasks Modal open/close
-      openTasksBtn.addEventListener('click', () => {
-        renderChecklist();
-        tasksModal.classList.remove('hidden');
-        tasksModal.classList.add('flex');
-      });
-
-      closeTasksBtn.addEventListener('click', () => {
-        tasksModal.classList.add('hidden');
-        tasksModal.classList.remove('flex');
-      });
-
-      modalSpinCloseBtn.addEventListener('click', () => {
-        tasksModal.classList.add('hidden');
-        tasksModal.classList.remove('flex');
-      });
-
-      // Timer duration setting buttons
-      document.querySelectorAll('.timer-opt').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.timer-opt').forEach(b => {
-            b.className = "timer-opt px-2.5 py-1 rounded bg-slate-700 hover:bg-amber-500 hover:text-black font-bold text-slate-200 transition";
-          });
-          btn.className = "timer-opt px-2.5 py-1 rounded bg-amber-500 text-black font-bold transition";
-          timerDuration = parseInt(btn.dataset.time, 10);
-          if (!isHuntActive) {
-            timerRemaining = timerDuration;
-            countdownNumber.textContent = timerDuration;
-          }
-        });
-      });
-
-      // Play Again Modal Button
-      playAgainBtn.addEventListener('click', resetGame);
-
-      // Canvas sharpness on window resize
-      window.addEventListener('resize', () => {
-        drawWheel();
-      });
-    }
-
-    // Run on window load
-    window.onload = function() {
-      init();
-    };
+    });
   </script>
 </body>
 </html>
