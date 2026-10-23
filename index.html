@@ -85,10 +85,9 @@
                   0 0 0 1px rgba(255, 255, 255, 0.1);
     }
 
-    /* Seamless Logo Styling - Invert black-on-white image to crisp white lion and text with zero white box */
+    /* Seamless Logo Styling - Natural colors, crisp rendering, glowing backdrop */
     .pure-logo-img {
-      filter: invert(1) brightness(1.2) drop-shadow(0 0 15px rgba(251, 191, 36, 0.45));
-      mix-blend-mode: screen;
+      filter: drop-shadow(0 6px 20px rgba(251, 191, 36, 0.35));
     }
 
     /* Smooth animated transitions */
@@ -133,14 +132,14 @@
   <!-- GRAND CENTER HEADER: HUGE MIB LOGO (NO BORDER, NO BACKGROUND) + "SPIN THE WHEEL" TITLE -->
   <header class="w-full pt-4 pb-2 px-4 flex flex-col items-center justify-center text-center z-30">
     
-    <!-- Large MIB Lion Logo - Pure, No Border, No Background -->
-    <div class="relative mb-1 flex items-center justify-center">
-      <div class="w-56 sm:w-72 md:w-96 h-28 sm:h-36 md:h-44 flex items-center justify-center overflow-hidden">
+    <!-- Large MIB Lion Logo - Scaled Up, Natural Graphic Details -->
+    <div class="relative mb-3 flex items-center justify-center">
+      <div class="w-72 sm:w-96 md:w-[480px] lg:w-[560px] h-36 sm:h-48 md:h-64 flex items-center justify-center">
         <img 
           id="mibLogoImg"
           src="./logo.png" 
           alt="Make In BVB Lion Logo" 
-          class="pure-logo-img max-w-full max-h-full object-contain transition-transform duration-300 hover:scale-105"
+          class="pure-logo-img w-full h-full object-contain transition-transform duration-300 hover:scale-105"
           onerror="this.onerror=null; this.src='./logo.jpg';"
         />
       </div>
