@@ -311,7 +311,40 @@
         osc.stop(ctx.currentTime + 0.04);
       } catch(e) {}
     }
+function playAlarm() {
+  if (!soundEnabled) return;
 
+  try {
+    const ctx = getAudioContext();
+
+    // Create a loud, attention-grabbing alarm
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    oscillator.type = "sawtooth";
+
+    // High-pitched alarm frequency
+    oscillator.frequency.setValueAtTime(700, ctx.currentTime);
+    oscillator.frequency.setValueAtTime(1100, ctx.currentTime + 0.25);
+    oscillator.frequency.setValueAtTime(700, ctx.currentTime + 0.5);
+    oscillator.frequency.setValueAtTime(1100, ctx.currentTime + 0.75);
+
+    // Gradually increase and decrease volume to avoid an abrupt click
+    gain.gain.setValueAtTime(0.01, ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.7, ctx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.7, ctx.currentTime + 0.9);
+    gain.gain.linearRampToValueAtTime(0.01, ctx.currentTime + 1.2);
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start(ctx.currentTime);
+    oscillator.stop(ctx.currentTime + 1.2);
+
+  } catch (error) {
+    console.error("Alarm sound failed:", error);
+  }
+}
     function playFanfare() {
       if (!soundEnabled) return;
       try {
@@ -486,7 +519,7 @@
       startCountdown();
     }
 
-    function startCountdown() {
+ function startCountdown() {
   clearInterval(timerInterval);
   timerRemaining = timerDuration;
 
@@ -503,7 +536,13 @@
       document.getElementById("timerLabel").innerText = "TIME UP";
 
       updateTimerDisplay();
+
+      // Play the loud alarm when the timer reaches zero
+      playAlarm();
+
+      // Display the time-expired message
       onTimeExpired();
+
       return;
     }
 
