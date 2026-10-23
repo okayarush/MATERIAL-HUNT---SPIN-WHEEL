@@ -120,14 +120,14 @@
     
     <!-- Huge MIB Lion Logo -->
     <div class="w-full flex items-center justify-center mb-3">
-      <img 
-        id="mainLogo"
-        src="./MIB LOGO MAIN.webp" 
-        onerror="this.onerror=null; this.src='./logo.png'; this.onerror=function(){this.src='./logo.jpg';};" 
-        alt="Make In BVB Lion Logo" 
-        class="w-64 sm:w-80 md:w-[460px] lg:w-[560px] max-h-56 object-contain filter drop-shadow-[0_0_30px_rgba(245,179,36,0.35)] transition-transform duration-300 hover:scale-105"
-      />
-    </div>
+  <img
+    id="mainLogo"
+    src="./MIB LOGO MAIN.webp"
+    onerror="this.onerror=null; this.src='./logo.png'; this.onerror=function(){this.src='./logo.jpg';};"
+    alt="Make In BVB Lion Logo"
+    class="w-80 sm:w-[420px] md:w-[560px] lg:w-[680px] max-h-72 md:max-h-80 object-contain filter drop-shadow-[0_0_30px_rgba(245,179,36,0.35)] transition-transform duration-300 hover:scale-105"
+  />
+</div>
 
     <!-- Glowing 24K Gold Title -->
     <h1 class="carnival-title-vibrant text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black uppercase tracking-wider py-1">
@@ -487,23 +487,40 @@
     }
 
     function startCountdown() {
-      clearInterval(timerInterval);
-      timerRemaining = timerDuration;
-      updateTimerDisplay();
+  clearInterval(timerInterval);
+  timerRemaining = timerDuration;
 
-      timerInterval = setInterval(() => {
-        timerRemaining--;
-        if (timerRemaining <= 0) {
-          clearInterval(timerInterval);
-          timerRemaining = 0;
-          updateTimerDisplay();
-          onTimeExpired();
-        } else {
-          updateTimerDisplay();
-          if (timerRemaining <= 5) playTick();
-        }
-      }, 1000);
+  document.getElementById("timerLabel").innerText = "TIME LEFT";
+  updateTimerDisplay();
+
+  timerInterval = setInterval(() => {
+    timerRemaining--;
+
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      timerRemaining = 0;
+
+      document.getElementById("timerLabel").innerText = "TIME UP";
+
+      updateTimerDisplay();
+      onTimeExpired();
+      return;
     }
+
+    if (timerRemaining <= 3) {
+      document.getElementById("timerLabel").innerText = "FINAL COUNTDOWN";
+      playTick();
+    } else {
+      document.getElementById("timerLabel").innerText = "TIME LEFT";
+
+      if (timerRemaining <= 5) {
+        playTick();
+      }
+    }
+
+    updateTimerDisplay();
+  }, 1000);
+}
 
     function updateTimerDisplay() {
       const display = document.getElementById("timerDisplay");
